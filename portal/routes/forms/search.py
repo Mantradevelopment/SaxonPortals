@@ -77,16 +77,15 @@ class SearchForms(Resource):
             form_status = parameters_dict["FormStatus"]
             submitted_from = parameters_dict["SubmittedFrom"]
             submitted_to = parameters_dict["SubmittedTo"]
-            print(submitted_from)
-            print(parameters_dict)
+            print("submittedfrom", submitted_from)
+            print("parameters_dict", parameters_dict)
             if parameters_dict["FormType"] == TOKEN_FORMTYPE_TERMINATION or parameters_dict["FormType"] == "":
-
+                print("Member Name", parameters_dict["Member"], "___End")
                 termination_form_data = db.session.query(Token, Terminationform).filter(
                     Token.FormID == Terminationform.FormID,
                     Token.FormType == TOKEN_FORMTYPE_TERMINATION,
                     Token.TokenStatus == status.STATUS_ACTIVE,
-                    or_(
-                        Token.EmployerID.ilike("%" + parameters_dict["Employer"] + "%"),
+                    or_(Token.EmployerID.ilike("%" + parameters_dict["Employer"] + "%"),
                         Terminationform.EmployerName.ilike("%" + parameters_dict["Employer"] + "%")),
                     Terminationform.MemberName.ilike("%" + parameters_dict["Member"] + "%"),
                     Terminationform.PendingFrom.ilike("%" + parameters_dict["PendingFrom"] + "%"),
@@ -99,10 +98,10 @@ class SearchForms(Resource):
                 else:
                     termination_form_data = termination_form_data.filter(Token.InitiatedDate <= submitted_to,
                                                                          Token.InitiatedDate >= submitted_from)
-                print(str(termination_form_data))
                 termination_form_data = termination_form_data.order_by(Token.LastModifiedDate.desc()).all()
                 # print(termination_form_data)
                 for tokens_data, terminations in termination_form_data:
+                    print("termination Employer name", terminations.EmployerName)
                     forms_data.append({
                         "Token": tokens_data.TokenID,
                         "EmployerID": tokens_data.EmployerID,
@@ -114,22 +113,44 @@ class SearchForms(Resource):
                         "EmailID": terminations.EmailAddress,
                         "PendingFrom": tokens_data.PendingFrom
                     })
-                    print(type(tokens_data.InitiatedDate))
+                    print("type(tokens_data.InitiatedDate)", type(tokens_data.InitiatedDate))
                 # print(forms_data)
             if parameters_dict["FormType"] == TOKEN_FORMTYPE_ENROLLMENT or parameters_dict["FormType"] == "":
-                enrollment_form_data = db.session.query(Token, Enrollmentform).filter(
-                    Token.FormID == Enrollmentform.FormID,
-                    Token.FormType == TOKEN_FORMTYPE_ENROLLMENT,
-                    Enrollmentform.PendingFrom.ilike("%" + parameters_dict["PendingFrom"] + "%"),
-                    or_(Enrollmentform.FirstName.ilike("%" + parameters_dict["Member"] + "%"),
-                        Enrollmentform.LastName.ilike("%" + parameters_dict["Member"] + "%")),
-                    or_(Token.EmployerID.ilike("%" + parameters_dict["Employer"] + "%"),
-                        Enrollmentform.EmployerName.ilike("%" + parameters_dict["Employer"] + "%")),
-                    Token.TokenStatus == status.STATUS_ACTIVE,
-                    Token.FormStatus.ilike("%" + form_status + "%"),
-                    Token.FormStatus != status.STATUS_DELETE
-
-                )
+                name = parameters_dict["Member"]
+                if " " in name:
+                    firstname, lastname = name.split(" ")
+                    print("firstname if", firstname, "--End")
+                    print("lastname if", lastname, "--End")
+                    if (lastname is None or lastname == ""):
+                        lastname = firstname
+                    if (firstname is None or firstname == ""):
+                        firstname = lastname
+                    enrollment_form_data = db.session.query(Token, Enrollmentform).filter(
+                        Token.FormID == Enrollmentform.FormID,
+                        Token.FormType == TOKEN_FORMTYPE_ENROLLMENT,
+                        Enrollmentform.PendingFrom.ilike("%" + parameters_dict["PendingFrom"] + "%"),
+                        and_(Enrollmentform.FirstName.ilike("%" + str(firstname) + "%"),
+                             Enrollmentform.LastName.ilike("%" + str(lastname) + "%")),
+                        or_(Token.EmployerID.ilike("%" + parameters_dict["Employer"] + "%"),
+                            Enrollmentform.EmployerName.ilike("%" + parameters_dict["Employer"] + "%")),
+                        Token.TokenStatus == status.STATUS_ACTIVE,
+                        Token.FormStatus.ilike("%" + form_status + "%"),
+                        Token.FormStatus != status.STATUS_DELETE
+                    )
+                else:
+                    print("name else", name, "--End")
+                    enrollment_form_data = db.session.query(Token, Enrollmentform).filter(
+                        Token.FormID == Enrollmentform.FormID,
+                        Token.FormType == TOKEN_FORMTYPE_ENROLLMENT,
+                        Enrollmentform.PendingFrom.ilike("%" + parameters_dict["PendingFrom"] + "%"),
+                        or_(Enrollmentform.FirstName.ilike("%" + str(name) + "%"),
+                            Enrollmentform.LastName.ilike("%" + str(name) + "%")),
+                        or_(Token.EmployerID.ilike("%" + parameters_dict["Employer"] + "%"),
+                            Enrollmentform.EmployerName.ilike("%" + parameters_dict["Employer"] + "%")),
+                        Token.TokenStatus == status.STATUS_ACTIVE,
+                        Token.FormStatus.ilike("%" + form_status + "%"),
+                        Token.FormStatus != status.STATUS_DELETE
+                    )
                 if submitted_from == submitted_to:
                     enrollment_form_data = enrollment_form_data.filter(Token.InitiatedDate >= submitted_to,
                                                                        Token.InitiatedDate < submitted_to + timedelta(

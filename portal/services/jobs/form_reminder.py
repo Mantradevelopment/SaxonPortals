@@ -51,9 +51,10 @@ def send_form_reminder(app):
                         LOG.error(e)
             else:
                 if (datetime.utcnow() - enrollments.LastNotifiedDate).days == 3:
+                    enrollments.LastName = enrollments.LastName if (enrollments.LastName is not None) else ""
                     subject = "Your Silver Thatch Pensions Enrollment Form needs to be completed"
-                    msg_text = f'<p>**This is an auto-generated e-mail message.' \
-                               f' Please do not reply to this message. **</p>' \
+                    msg_text = f'<p>**This is an auto-generated e-mail message. Please do not reply to this message. ' \
+                               f'**</p>' \
                                f'<p>Dear {enrollments.FirstName + " " + enrollments.LastName}</p>' \
                                f'<p>Please click <a href="{APP.config["FRONTEND_URL"]}/enrollment-form/{tokens.TokenID}">' \
                                f'here</a>. Otherwise, ' \
