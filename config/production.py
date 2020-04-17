@@ -72,10 +72,8 @@ CORS_ORIGIN_WHITELIST = [
     "https://portal.silverthatch.org.ky"
 ]
 
-MAILGUN_API_KEY = "1dcbf1bdff3416543d67867101b08e49-52b6835e-5b18bf8e"
-MAILGUN_DOMAIN = "sandbox6edce741885a45088acf63216cdf5660.mailgun.org"
-
-MAILDOMAIN = "smtp.gmail.com"
-MAILPORT = 465
-EMAIL = ""
-PASSWORD = ""
+MAILSERVER = 'OFFICE365'
+MAILSERVER_DOMAIN = 'smtp.office365.com'
+MAILSERVER_PORT = 587
+MAILSERVER_USERNAME = 'support@silverthatch.org.ky'
+MAILSERVER_PASSWORD = 'sxqqqrmfpvbhrcsn'
