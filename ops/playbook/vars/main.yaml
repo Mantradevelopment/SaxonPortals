@@ -4,5 +4,6 @@ git_version: master
 ld_library_path: /usr/lib/oracle/18.5/client64/lib
 
 docroot: /var/www/backend
-nginx_port: 9000
+backend_nginx_port: 9080
+backend_nginx_ssl_dir: /etc/nginx/ssl
 uwsgi_port: 8080

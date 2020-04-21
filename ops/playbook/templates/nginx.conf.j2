@@ -1,5 +1,12 @@
 server {
-    listen {{ nginx_port }};
+    listen {{ backend_nginx_port }} default_server;
+    listen [::]:{{ backend_nginx_port }} default_server;
+    listen 9443 ssl;
+    server_name {{ backend_domain_name }};
+
+    # ssl configs
+    ssl_certificate     {{ backend_nginx_ssl_dir }}/{{ backend_domain_name }}.cert.pem;
+    ssl_certificate_key {{ backend_nginx_ssl_dir }}/{{ backend_domain_name }}.key.pem;
 
     # Ignore trusted IPs
     real_ip_recursive on;

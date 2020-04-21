@@ -63,7 +63,7 @@
 
     - name: Configuring firewall
       firewalld:
-        port: "{{ nginx_port }}/tcp"
+        port: "{{ backend_nginx_port }}/tcp"
         permanent: yes
         state: enabled
 
