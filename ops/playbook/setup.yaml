@@ -67,6 +67,12 @@
         permanent: yes
         state: enabled
 
+    - name: Configuring firewall
+      firewalld:
+        port: "{{ backend_nginx_ssl_port }}/tcp"
+        permanent: yes
+        state: enabled
+
     - debug: msg="Reload firewalld"
       notify: reload_firewalld
       changed_when: true

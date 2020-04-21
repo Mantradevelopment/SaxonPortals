@@ -1,12 +1,29 @@
 server {
     listen {{ backend_nginx_port }} default_server;
     listen [::]:{{ backend_nginx_port }} default_server;
-    listen 9443 ssl;
+    server_name {{ backend_domain_name }};
+
+    # Ignore trusted IPs
+    real_ip_recursive on;
+    real_ip_header X-Forwarded-For;
+    proxy_pass_request_headers on;
+
+    # Set VPC subnet as trusted
+    set_real_ip_from 10.0.0.0/16;
+
+    location / {
+        include uwsgi_params;
+        uwsgi_pass unix:{{ docroot }}/backend.sock;
+    }
+}
+
+server {
+    listen {{ backend_nginx_ssl_port }} ssl;
     server_name {{ backend_domain_name }};
 
     # ssl configs
-    # ssl_certificate     {{ backend_nginx_ssl_dir }}/{{ backend_domain_name }}.cert.pem;
-    # ssl_certificate_key {{ backend_nginx_ssl_dir }}/{{ backend_domain_name }}.key.pem;
+    ssl_certificate     {{ backend_nginx_ssl_dir }}/{{ backend_domain_name }}.cert.pem;
+    ssl_certificate_key {{ backend_nginx_ssl_dir }}/{{ backend_domain_name }}.key.pem;
 
     # Ignore trusted IPs
     real_ip_recursive on;
