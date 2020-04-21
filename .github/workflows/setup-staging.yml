@@ -5,6 +5,9 @@ on:
     branches:
       - master
     paths:
+      - 'ops/playbook/templates/'
+      - 'ops/playbook/vars/'
+      - 'ops/playbook/handlers/'
       - 'ops/playbook/inventory/staging'
       - 'ops/playbook/inventory/.trigger-setup-staging'
 
