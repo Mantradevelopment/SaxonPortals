@@ -5,8 +5,8 @@ server {
     server_name {{ backend_domain_name }};
 
     # ssl configs
-    ssl_certificate     {{ backend_nginx_ssl_dir }}/{{ backend_domain_name }}.cert.pem;
-    ssl_certificate_key {{ backend_nginx_ssl_dir }}/{{ backend_domain_name }}.key.pem;
+    # ssl_certificate     {{ backend_nginx_ssl_dir }}/{{ backend_domain_name }}.cert.pem;
+    # ssl_certificate_key {{ backend_nginx_ssl_dir }}/{{ backend_domain_name }}.key.pem;
 
     # Ignore trusted IPs
     real_ip_recursive on;
