@@ -17,7 +17,7 @@ server {
     }
 }
 
-{% if backend_nginx_ssl_enabled == 'true' %}
+{% if backend_nginx_ssl_enabled in ['true', true, 1, '1'] %}
 server {
     listen {{ backend_nginx_ssl_port }} ssl;
     server_name {{ backend_domain_name }};
