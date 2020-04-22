@@ -83,7 +83,8 @@ def create_accounts(app):
                         user = Users(UserID=member.MKEY,
                                      Username=member.MEMNO,
                                      Email=member.EMAIL,
-                                     DisplayName=member.FNAME if member.FNAME is not None else "" + " " + member.LNAME if member.LNAME is not None else "",
+                                     DisplayName=(member.FNAME if member.FNAME is not None else "") + " " + (
+                                         member.LNAME if member.LNAME is not None else ""),
                                      Role=ROLES_MEMBER,
                                      Status=STATUS_ACTIVE)
                         db.session.add(user)
@@ -93,7 +94,7 @@ def create_accounts(app):
                         LOG.warning("There was an unexpected error while creating new user from MembersView. %s", e)
 
             except Exception as e:
-                LOG.warning("There was an unexpected error while processing MembersView items. %s",e)
+                LOG.warning("There was an unexpected error while processing MembersView items. %s", e)
             finally:
                 offset_ += 99
 
