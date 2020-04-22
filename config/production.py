@@ -18,7 +18,7 @@ DIRECTORIES = [
     'contribution', 'batch', 'Annual',
 ]
 
-DBAAS_READONLY_CONNECTION_STRING = "oracle+cx_oracle://SAXON_PORTAL:SAxon0123$$$@10.147.0.2:1521/?service_name=dtq.app.saxon.oraclevcn.com"
+DBAAS_READONLY_CONNECTION_STRING = "oracle+cx_oracle://SAXON_PORTAL:C_dsr7xXB3cEJ#HH@10.147.0.19:1521/?service_name=prod.app.saxon.oraclevcn.com"
 DBAAS_WRITEONLY_CONNECTION_STRING = "oracle+cx_oracle://manomaysaxonapp:A93#pqj4MZ__23@SAXON2.PRD"
 
 
