@@ -87,7 +87,7 @@ def create_accounts(app):
                                          member.LNAME if member.LNAME is not None else ""),
                                      Role=ROLES_MEMBER,
                                      Status=STATUS_ACTIVE)
-                        db.session.add(user)
+                        db.session.merge(user)
                         db.session.commit()
                     except Exception as e:
                         db.session.rollback()
