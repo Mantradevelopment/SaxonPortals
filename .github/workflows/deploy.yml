@@ -52,6 +52,7 @@ jobs:
           keyFile: ./ops/ssh/prod_deploy_private_key
           keyFileVaultPass: ${{ secrets.ANSIBLE_VAULT_SECRET }}
           extraVars: "-e app_env=staging -e git_version=${{ github.sha }} -e git_actor=${{ github.actor }}"
+          extraFile: ./ops/playbook/vars/staging.yaml
           verbosity: "vv"
 
   deploy-to-production:
@@ -67,4 +68,5 @@ jobs:
           keyFile: ./ops/ssh/prod_deploy_private_key
           keyFileVaultPass: ${{ secrets.ANSIBLE_VAULT_SECRET }}
           extraVars: "-e app_env=production -e git_version=${{ github.sha }} -e git_actor=${{ github.actor }}"
+          extraFile: ./ops/playbook/vars/production.yaml
           verbosity: "vv"
