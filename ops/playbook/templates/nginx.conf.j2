@@ -17,6 +17,7 @@ server {
     }
 }
 
+{% if backend_nginx_ssl_enabled == 'true' %}
 server {
     listen {{ backend_nginx_ssl_port }} ssl;
     server_name {{ backend_domain_name }};
@@ -38,3 +39,4 @@ server {
         uwsgi_pass unix:{{ docroot }}/backend.sock;
     }
 }
+{% endif %}

@@ -1,1 +1,2 @@
 backend_domain_name: api.portal.silverthatch.org.ky
+backend_nginx_ssl_enabled: true
