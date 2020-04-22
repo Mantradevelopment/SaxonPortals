@@ -25,7 +25,7 @@ DBAAS_WRITEONLY_CONNECTION_STRING = "oracle+cx_oracle://manomaysaxonapp:A93#pqj4
 SERVER_ADDRESS = "0.0.0.0"
 SERVER_PORT = 90
 SERVER_WEB_URL = 'https://portal.silverthatch.org.ky/'
-FRONTEND_URL = 'http://portal.silverthatch.org.ky/'
+FRONTEND_URL = 'https://portal.silverthatch.org.ky/'
 MAIL_ENROLLMENT_URL = 'https://silverthatch.org.ky/?d=756'
 
 SECRET_KEY = 'zXP-H@x4AYjD%w4rRzZW7dVyur^Y$5'

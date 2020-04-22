@@ -289,7 +289,9 @@ class TerminationInitiationController(Resource):
                                        ' Please do not reply to this message. **</p>' + \
                                        f'<p>Dear {member_name}</p>' + \
                                        '<p>Your Termination has been rejected </p>' + \
-                                       '<p>Please click here. Otherwise, cut and paste the link below into a ' + \
+                                       '<p>Please click ' \
+                                       f'<a href="{APP.config["FRONTEND_URL"]}/terminationform/{token}">here</a>.' \
+                                       ' Otherwise, cut and paste the link below into a ' + \
                                        'browser, ' + \
                                        'fill in the required information, and when you are done hit the ' + \
                                        'submit button to ' + \

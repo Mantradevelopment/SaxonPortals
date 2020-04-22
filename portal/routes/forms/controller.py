@@ -117,7 +117,7 @@ class FormController(Resource):
             subject = "Your Silver Thatch Pensions Enrollment Form needs to be completed"
             msgtext = f'<p>**This is an auto-generated e-mail message.' + \
                       f' Please do not reply to this message. **</p>' + \
-                      f'<p>Dear{name}</p>' + \
+                      f'<p>Dear {name}</p>' + \
                       f'<p>Please click <a href="{APP.config["FRONTEND_URL"]}/enrollment-form/{TokenID}">here</a>' \
                       f'. Otherwise, ' + \
                       f'cut and paste the link below into a browser, fill in the ' + \
