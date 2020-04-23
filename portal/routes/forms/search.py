@@ -8,8 +8,10 @@ from ...helpers import token_verify_or_raise, RESPONSE_OK
 from ...models import db, status, roles
 from ...models.enrollmentform import Enrollmentform
 from ...models.terminationform import Terminationform
-from ...models.token import Token, TOKEN_FORMTYPE_TERMINATION, TOKEN_FORMTYPE_ENROLLMENT, TOKEN_FORMTYPE_CONTRIBUTION
+from ...models.token import Token, TOKEN_FORMTYPE_TERMINATION, TOKEN_FORMTYPE_ENROLLMENT, TOKEN_FORMTYPE_CONTRIBUTION, \
+    TOKEN_FORMTYPE_DOCUMENT
 from ...models.contributionform import Contributionform
+from ...models.documents import Documents
 from ...models.comments import Comments
 from ...models.roles import *
 from ...services.mail import send_email
@@ -205,6 +207,42 @@ class SearchForms(Resource):
                             len(str(contributions.FilePath).replace("/", "\\").split(
                                 "\\")) - 1] if contributions.FilePath is not None else ""
                     })
+
+            if token["role"] == ROLES_REVIEW_MANAGER and \
+                    (parameters_dict["FormType"] == TOKEN_FORMTYPE_DOCUMENT or parameters_dict[
+                        "FormType"] == "") \
+                    and (parameters_dict["Member"] is None or parameters_dict["Member"] == ""):
+                documents = Documents.query \
+                    .filter(Documents.PendingFrom.ilike("%" + parameters_dict["PendingFrom"] + "%"),
+                            Documents.Status.ilike("%" + form_status + "%"),
+                            or_(Documents.EmployerID.ilike("%" + parameters_dict["Employer"] + "%"),
+                                Documents.EmployerName.ilike("%" + parameters_dict["Employer"] + "%")),
+                            Documents.Status != status.STATUS_DELETE)
+                if submitted_from == submitted_to:
+                    documents = documents.filter(Documents.Date >= submitted_to,
+                                                 Documents.Date < submitted_to + timedelta(
+                                                     days=1)
+                                                 )
+                else:
+                    documents = documents.filter(Documents.Date <= submitted_to,
+                                                 Documents.Date >= submitted_from)
+                    documents = documents.order_by(Documents.LastModifiedDate.desc()).all()
+
+                for document in documents:
+                    forms_data.append({
+                        "FormID": document.FormID,
+                        "EmployerID": document.EmployerID,
+                        "EmployerName": document.EmployerName,
+                        "FormType": "Document",
+                        "FormStatus": document.Status,
+                        "LastModifiedDate": document.LastModifiedDate,
+                        "PendingFrom": document.PendingFrom,
+                        "FileName": str(document.FilePath).replace("/", "\\").split("\\")[len(
+                            str(document.FilePath).replace("/", "\\").split(
+                                "\\")) - 1] if document.FilePath is not None else ""
+                    })
+                    print("form_data", forms_data)
+
             return {"forms": forms_data}, 200
         except Exception as e:
             LOG.error("Exception while adding employer to member", e)
