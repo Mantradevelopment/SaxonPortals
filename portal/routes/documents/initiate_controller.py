@@ -56,16 +56,15 @@ class InitiateDocument(Resource):
         initiation_date = datetime.utcnow()
         userid = request.form["employerusername"]
         employer_name = request.form["employername"]
-        path = os.path.join(path, "rev_inbox")
-        if not os.path.exists(path):
-            os.mkdir(path)
-        path = os.path.join(path, "PensionEmployer")
+        path = os.path.join(path, "Employers")
         if not os.path.exists(path):
             os.mkdir(path)
         path = os.path.join(path, userid)
         if not os.path.exists(path):
             os.mkdir(path)
-
+        path = os.path.join(path, "documents")
+        if not os.path.exists(path):
+            os.mkdir(path)
         if 'file' in request.files:
             filename = secure_filename(file.filename)
             print(filename)
@@ -80,6 +79,10 @@ class InitiateDocument(Resource):
                 )
                 db.session.add(document)
                 db.session.commit()
+
+                path = os.path.join(path, str(document.FormID))
+                if not os.path.exists(path):
+                    os.mkdir(path)
                 file.save(os.path.join(path, filename))
                 document.FilePath = os.path.join(path, filename)
                 db.session.commit()
