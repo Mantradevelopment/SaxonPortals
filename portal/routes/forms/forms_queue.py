@@ -10,6 +10,7 @@ from ...models.enrollmentform import Enrollmentform
 from ...models.terminationform import Terminationform
 from ...models.token import Token, TOKEN_FORMTYPE_TERMINATION, TOKEN_FORMTYPE_ENROLLMENT
 from ...models.comments import Comments
+from ...models.documents import Documents
 from ...models.status import *
 from ...models.roles import *
 from ...services.mail import send_email
@@ -105,7 +106,21 @@ class FormQueue(Resource):
                     "FileName": str(contributions.FilePath).replace("/", "\\").split("\\")[
                         len(str(contributions.FilePath).replace("/", "\\").split("\\")) - 1] if contributions.FilePath is not None else ""
                 })
-
+            documents = Documents.query.filter(Documents.PendingFrom == ROLES_REVIEW_MANAGER,
+                                                               Documents.Status == STATUS_PENDING) \
+                .order_by(Documents.LastModifiedDate.desc()).all()
+            for document in documents:
+                forms_data.append({
+                    "FormID": documents.FormID,
+                    "EmployerID": documents.EmployerID,
+                    "EmployerName": documents.EmployerName,
+                    "FormType": "Contribution",
+                    "FormStatus": documents.Status,
+                    "LastModifiedDate": documents.LastModifiedDate,
+                    "FileName": str(documents.FilePath).replace("/", "\\").split("\\")[
+                        len(str(documents.FilePath).replace("/", "\\").split(
+                            "\\")) - 1] if documents.FilePath is not None else ""
+                })
             return {"forms_queue": forms_data}, 200
         elif args["role"] == roles.ROLES_EMPLOYER:
             employer_id = args["user"]
