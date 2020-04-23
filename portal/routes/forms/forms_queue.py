@@ -111,15 +111,15 @@ class FormQueue(Resource):
                 .order_by(Documents.LastModifiedDate.desc()).all()
             for document in documents:
                 forms_data.append({
-                    "FormID": documents.FormID,
-                    "EmployerID": documents.EmployerID,
-                    "EmployerName": documents.EmployerName,
+                    "FormID": document.FormID,
+                    "EmployerID": document.EmployerID,
+                    "EmployerName": document.EmployerName,
                     "FormType": "Contribution",
-                    "FormStatus": documents.Status,
-                    "LastModifiedDate": documents.LastModifiedDate,
-                    "FileName": str(documents.FilePath).replace("/", "\\").split("\\")[
-                        len(str(documents.FilePath).replace("/", "\\").split(
-                            "\\")) - 1] if documents.FilePath is not None else ""
+                    "FormStatus": document.Status,
+                    "LastModifiedDate": document.LastModifiedDate,
+                    "FileName": str(document.FilePath).replace("/", "\\").split("\\")[
+                        len(str(document.FilePath).replace("/", "\\").split(
+                            "\\")) - 1] if document.FilePath is not None else ""
                 })
             return {"forms_queue": forms_data}, 200
         elif args["role"] == roles.ROLES_EMPLOYER:
