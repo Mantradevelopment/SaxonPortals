@@ -114,7 +114,7 @@ class FormQueue(Resource):
                     "FormID": document.FormID,
                     "EmployerID": document.EmployerID,
                     "EmployerName": document.EmployerName,
-                    "FormType": "Contribution",
+                    "FormType": "Documents",
                     "FormStatus": document.Status,
                     "LastModifiedDate": document.LastModifiedDate,
                     "FileName": str(document.FilePath).replace("/", "\\").split("\\")[
