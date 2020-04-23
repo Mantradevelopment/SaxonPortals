@@ -55,6 +55,7 @@ class InitiateDocument(Resource):
         file = request.files['file']
         initiation_date = datetime.utcnow()
         userid = request.form["employerusername"]
+        
         employer_name = request.form["employername"]
         path = os.path.join(path, "rev_inbox")
         if not os.path.exists(path):
