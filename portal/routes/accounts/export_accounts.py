@@ -72,10 +72,13 @@ class ExportAccounts(Resource):
                 members = MemberView.query.filter(MemberView.MEMNO.ilike("%" + args_dict["ID"] + "%"),
                                                   or_(MemberView.FNAME.ilike("%" + args_dict["name"] + "%"),
                                                       MemberView.LNAME.ilike("%" + args_dict["name"] + "%")),
-                                                  MemberView.EMAIL.ilike("%" + args_dict["email"] + "%"),
                                                   MemberView.PSTATUS.ilike("%" + args_dict["status"] + "%"),
                                                   MemberView.EMPOYER.ilike("%" + employer_sname + "%"),
-                                                  MemberView.EM_STATUS != "Terminated").all()
+                                                  MemberView.EM_STATUS.ilike("%Full%"),
+                                                  MemberView.PSTATUS.ilike("%active%"))
+                if args_dict["email"] != "" and args_dict["email"] is not None:
+                    members = members.filter(MemberView.EMAIL.ilike("%" + args_dict["email"] + "%"))
+                members = members.all()
                 if members is not None:
                     for mem in members:
                         accounts_list.append({
