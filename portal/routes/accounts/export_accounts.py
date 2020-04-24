@@ -182,11 +182,12 @@ class ExportAccounts(Resource):
             for key in keys:
                 if i == 0:
                     worksheet.write(0, keys.index(key), key, header_format)
+                    worksheet.write(i + 1, keys.index(key), account[key], data_cell_format)
                     continue
                 if isinstance(account[key], date):
-                    worksheet.write(i, keys.index(key), account[key], date_format)
+                    worksheet.write(i + 1, keys.index(key), account[key], date_format)
                     continue
-                worksheet.write(i, keys.index(key), account[key], data_cell_format)
+                worksheet.write(i + 1, keys.index(key), account[key], data_cell_format)
             i += 1
         workbook.close()
         return file_path
