@@ -74,10 +74,10 @@ def create_accounts(app):
                 LOG.debug("%s members fetched successfully from offset %s", len(members), offset_)
                 for member in members:
                     try:
-                        userExists = Users.query.filter_by(Username=member.MEMNO).scalar()
-                        if userExists is not None:
-                            LOG.debug("Member with username '%s' exists. Skip adding...", member.MEMNO)
-                            continue
+                        # userExists = Users.query.filter_by(Username=member.MEMNO).scalar()
+                        # if userExists is not None:
+                        #     LOG.debug("Member with username '%s' exists. Skip adding...", member.MEMNO)
+                        #     continue
 
                         LOG.debug("Member with username '%s' does not exist. Inserting...", member.MEMNO)
                         user = Users(UserID=member.MKEY,

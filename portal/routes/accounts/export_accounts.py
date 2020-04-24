@@ -72,7 +72,6 @@ class ExportAccounts(Resource):
                 members = MemberView.query.filter(MemberView.MEMNO.ilike("%" + args_dict["ID"] + "%"),
                                                   or_(MemberView.FNAME.ilike("%" + args_dict["name"] + "%"),
                                                       MemberView.LNAME.ilike("%" + args_dict["name"] + "%")),
-                                                  MemberView.PSTATUS.ilike("%" + args_dict["status"] + "%"),
                                                   MemberView.EMPOYER.ilike("%" + employer_sname + "%"),
                                                   MemberView.EM_STATUS.ilike("%Full%"),
                                                   MemberView.PSTATUS.ilike("%active%"))
@@ -83,7 +82,7 @@ class ExportAccounts(Resource):
                     for mem in members:
                         accounts_list.append({
                             'Number': mem.MEMNO,
-                            'Name': mem.FNAME if mem.FNAME is not None else "" + " " + mem.LNAME if mem.LNAME is not None else "",
+                            'Name': (mem.FNAME if mem.FNAME is not None else "") + " " + (mem.LNAME if mem.LNAME is not None else ""),
                             'Email': mem.EMAIL
                             # 'MEMNO': mem.MEMNO,
                             # 'FNAME': mem.FNAME,
@@ -150,7 +149,7 @@ class ExportAccounts(Resource):
             raise UnprocessableEntity()
 
     def build_excel_accounts(self, accounts, account_type):
-        filename = datetime.utcnow().strftime("%Y%m%d %H%M%S%f") + account_type + '.xls'
+        filename = datetime.utcnow().strftime("%Y%m%d %H%M%S%f") + account_type + '.xlsx'
         file_path = os.path.join(APP.config['EXCEL_TEMPLATE_DIR'], filename)
         workbook = xlsxwriter.Workbook(file_path)
         worksheet = workbook.add_worksheet(account_type)
