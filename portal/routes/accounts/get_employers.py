@@ -3,6 +3,8 @@ import json
 from datetime import datetime
 from flask import Blueprint, jsonify, request, abort, current_app as app
 from flask_restx import Resource, reqparse, fields
+from sqlalchemy import or_
+
 from ...helpers import randomStringwithDigitsAndSymbols, token_verify, token_verify_or_raise
 from ...encryption import Encryption
 from ...models import db, status, roles
@@ -56,7 +58,8 @@ class GetEmployers(Resource):
 
         try:
             LOG.info('GetEmployers: fetching EmployerView, offset: %s, limit: 50', offset)
-            employers = EmployerView.query.order_by(
+            employers = EmployerView.query.filter(or_(EmployerView.TERMDATE >= datetime.utcnow(),
+                                                  EmployerView.TERMDATE.is_(None))).order_by(
                 EmployerView.ERNO.desc()).offset(offset).limit(50).all()
             LOG.info('GetEmployers: finished fetching EmployerView. Got %s result', len(employers))
         except Exception as e:
