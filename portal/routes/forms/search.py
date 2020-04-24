@@ -209,8 +209,7 @@ class SearchForms(Resource):
                     })
 
             if token["role"] == ROLES_REVIEW_MANAGER and \
-                    (parameters_dict["FormType"] == TOKEN_FORMTYPE_DOCUMENT or parameters_dict[
-                        "FormType"] == "") \
+                    (parameters_dict["FormType"] == TOKEN_FORMTYPE_DOCUMENT or parameters_dict["FormType"] == "") \
                     and (parameters_dict["Member"] is None or parameters_dict["Member"] == ""):
                 documents = Documents.query \
                     .filter(Documents.PendingFrom.ilike("%" + parameters_dict["PendingFrom"] + "%"),
