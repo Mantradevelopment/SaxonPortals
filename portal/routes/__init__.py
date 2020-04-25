@@ -4,6 +4,7 @@ from flask_restx import Api
 def init_app(app):
     # from . import aux, index
     from . import index
+    from .temp import upload
     from .auth import token_check, login, security_questions, get_securityquestion_user, logout
     from .auth.password import reset, change
     from .file import download, explorer, employer_dealingdayrpt
