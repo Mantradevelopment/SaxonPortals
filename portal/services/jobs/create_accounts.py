@@ -51,9 +51,9 @@ def create_accounts(app):
         LOG.debug("Employers fetched: %s", len(employers))
         for employer in employers:
             try:
-                # employer_valid = MemberView.query.filter(MemberView.MEMNO == employer.ERNO).scalar()
-                # if employer_valid is not None:
-                #     continue
+                employer_valid = MemberView.query.filter(MemberView.MEMNO == employer.ERNO).scalar()
+                if employer_valid is not None:
+                    continue
                 user = Users(UserID=employer.ERKEY,
                              Username=employer.ERNO,
                              Email=employer.EMAIL,
