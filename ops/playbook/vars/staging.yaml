@@ -1,3 +1,3 @@
 app_env: staging
 backend_domain_name: api.portal-uat.silverthatch.org.ky
-backend_nginx_ssl_enabled: false
+backend_nginx_ssl_enabled: true
