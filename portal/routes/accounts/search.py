@@ -119,9 +119,7 @@ class Search(Resource):
                 employers = EmployerView.query \
                     .filter(EmployerView.ERNO.ilike(
                     "%" + args_dict["employerusername"] + "%"),
-                    EmployerView.ENAME.ilike("%" + args_dict["name"] + "%"),
-                    or_(EmployerView.TERMDATE >= datetime.utcnow(),
-                        EmployerView.TERMDATE.is_(None)))
+                    EmployerView.ENAME.ilike("%" + args_dict["name"] + "%"))
                 if args_dict["email"] != "" and args_dict["email"] is not None:
                     employers = employers.filter(EmployerView.EMAIL.ilike("%" + args_dict["email"] + "%"))
                 if args_dict["status"] != "" and args_dict["status"] is not None:

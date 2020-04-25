@@ -47,8 +47,7 @@ def create_accounts(app):
         # print(users)
         # send_temporary_passwords()
         LOG.debug("Starting creating employers accounts")
-        employers = EmployerView.query.filter(or_(EmployerView.TERMDATE >= datetime.utcnow(),
-                                                  EmployerView.TERMDATE.is_(None))).all()
+        employers = EmployerView.query.all()
         LOG.debug("Employers fetched: %s", len(employers))
         for employer in employers:
             try:
@@ -71,14 +70,12 @@ def create_accounts(app):
         Thread(target=send_temporary_passwords, args=(app,)).start()
         LOG.debug("Starting creating member accounts")
         offset_ = 0
-        count = MemberView.query.filter(MemberView.EM_STATUS.ilike("%FULL%"),
-                                        MemberView.PSTATUS.ilike("%active%")).count()
+        count = MemberView.query.count()
         count = int(count / 100) + 1
         for i in range(count):
             try:
                 LOG.debug("Going to fetch %s members from offset %s", count, offset_)
-                members = MemberView.query.filter(MemberView.EM_STATUS.ilike("%FULL%"),
-                                                  MemberView.PSTATUS.ilike("%active%")).offset(offset_).limit(100).all()
+                members = MemberView.query.offset(offset_).limit(100).all()
                 LOG.debug("%s members fetched successfully from offset %s", len(members), offset_)
                 for member in members:
                     try:

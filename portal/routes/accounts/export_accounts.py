@@ -117,16 +117,12 @@ class ExportAccounts(Resource):
                     employers = EmployerView.query.filter(EmployerView.EMAIL.ilike("%" + args_dict["email"] + "%"),
                                                           EmployerView.ERNO.ilike(
                                                               "%" + args_dict["employerusername"] + "%"),
-                                                          EmployerView.ENAME.ilike("%" + args_dict["name"] + "%"),
-                                                          or_(EmployerView.TERMDATE >= datetime.utcnow(),
-                                                              EmployerView.TERMDATE.is_(None))
+                                                          EmployerView.ENAME.ilike("%" + args_dict["name"] + "%")
                                                           ).all()
                 else:
                     employers = EmployerView.query.filter(EmployerView.ERNO.ilike(
                         "%" + args_dict["employerusername"] + "%"),
-                        EmployerView.ENAME.ilike("%" + args_dict["name"] + "%"),
-                        or_(EmployerView.TERMDATE >= datetime.utcnow(),
-                            EmployerView.TERMDATE.is_(None))
+                        EmployerView.ENAME.ilike("%" + args_dict["name"] + "%")
                     ).all()
                 if employers is not None:
                     for emp in employers:
