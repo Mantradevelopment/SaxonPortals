@@ -25,3 +25,10 @@ BACKEND_ENV=dev-unix FLASK_ENV=development  flask run
 ```
 
 http://127.0.0.1:5000/v1/health/status
+
+
+## How to run background jobs
+
+```
+BACKEND_ENV=development FLASK_ENV=development celery worker --app=tasks.worker.app --concurrency=1 --loglevel=INFO -E -B
+```
