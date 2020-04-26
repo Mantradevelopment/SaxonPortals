@@ -9,6 +9,7 @@ on:
       - 'conftest.py'
       - 'requirements.txt'
       - 'portal/**'
+      - 'tasks/**'
       - 'config/**'
 
 
