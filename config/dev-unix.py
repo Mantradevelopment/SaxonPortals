@@ -27,6 +27,9 @@ SERVER_WEB_URL = f'http://{SERVER_ADDRESS}:{SERVER_PORT}/static/'
 FRONTEND_URL = 'http://127.0.0.1:5000/'
 MAIL_ENROLLMENT_URL = 'http://127.0.0.1:5000/static'
 
+CELERY_BROKER_URL = 'filesystem://'
+CELERY_BROKER_FOLDER = os.path.join(DATA_DIR, 'broker')
+
 SECRET_KEY = 'BT-=f~i1IlIHF(#'
 JWT_SECRET = 'R]B+=46,e=gKtI/'
 

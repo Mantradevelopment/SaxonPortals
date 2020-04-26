@@ -24,6 +24,9 @@ SERVER_ADDRESS = "0.0.0.0"
 SERVER_PORT = 8080
 SERVER_WEB_URL = f'http://{SERVER_ADDRESS}:{SERVER_PORT}/static/'
 
+CELERY_BROKER_URL = 'filesystem://'
+CELERY_BROKER_FOLDER = os.path.join(DATA_DIR, 'broker')
+
 SECRET_KEY = 'z6lajn4@#vsedg'
 JWT_SECRET = 'N23tn@#$G"__0a'
 

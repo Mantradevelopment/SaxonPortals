@@ -1,3 +1,4 @@
+import os
 import logging
 
 LOG_LEVEL = logging.DEBUG
@@ -20,6 +21,9 @@ SERVER_ADDRESS = "0.0.0.0"
 SERVER_PORT = 811
 SERVER_WEB_URL = f'http://{SERVER_ADDRESS}:{SERVER_PORT}/static/'
 MAIL_ENROLLMENT_URL = 'https://silverthatch.org.ky/?d=756'
+
+CELERY_BROKER_URL = 'filesystem://'
+CELERY_BROKER_FOLDER = os.path.join(DATA_DIR, 'broker')
 
 FRONTEND_URL = 'http://192.168.2.132:812/'
 

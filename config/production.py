@@ -28,6 +28,9 @@ SERVER_WEB_URL = 'https://portal.silverthatch.org.ky/'
 FRONTEND_URL = 'https://portal.silverthatch.org.ky/'
 MAIL_ENROLLMENT_URL = 'https://silverthatch.org.ky/?d=756'
 
+CELERY_BROKER_URL = 'filesystem://'
+CELERY_BROKER_FOLDER = os.path.join(DATA_DIR, 'broker')
+
 SECRET_KEY = 'zXP-H@x4AYjD%w4rRzZW7dVyur^Y$5'
 JWT_SECRET = '8ERW&e=ay_fU@#G6VkQb2A+c2-sm3#'
 

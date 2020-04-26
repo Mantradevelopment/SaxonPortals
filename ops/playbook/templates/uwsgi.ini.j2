@@ -16,3 +16,7 @@ lazy-apps = true
 disable-logging = true
 die-on-term = true
 buffer-size = 65535
+
+; celery daemons
+attach-daemon = celery worker --app=tasks.worker.app --concurrency=2
+smart-attach-daemon = %(base)/data/celerybeat.pid celery beat --app=tasks.worker.app --pidfile=%(base)/data/celerybeat.pid

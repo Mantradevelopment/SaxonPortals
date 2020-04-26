@@ -14,9 +14,16 @@ from datetime import timedelta
 
 from flask import make_response, request
 from functools import update_wrapper
-from . import APP
+
 
 RESPONSE_OK = {"result": "Success"}
+
+
+def get_config_file_path():
+    env = os.getenv("BACKEND_ENV", default="development")
+    base = os.path.dirname(os.path.abspath(__file__))
+    absolute_path = os.path.abspath(os.path.join(base, '..', 'config', env + '.py'))
+    return absolute_path
 
 
 def delete_excel(filename):

@@ -6,6 +6,7 @@ from flask import Flask
 from flask_restx import Api, Resource
 from flask_cors import CORS
 from werkzeug.middleware.proxy_fix import ProxyFix
+from .helpers import get_config_file_path
 
 
 APP = None
@@ -23,13 +24,6 @@ def uwsgi_friendly_setup(app):
         # During development on local machine, we may use `flask run` command
         # in this case, uwsgi package won't be available and it will throw error
         pass
-
-
-def get_config_file_path():
-    env = os.getenv("BACKEND_ENV", default="development")
-    base = os.path.dirname(os.path.abspath(__file__))
-    absolute_path = os.path.abspath(os.path.join(base, '..', 'config', env + '.py'))
-    return absolute_path
 
 
 def init_logger(app):
