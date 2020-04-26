@@ -27,10 +27,10 @@ def create_celery_app(flask_app):
             'tasks.jobs.send_temporary_passwords',
         ),
         'beat_schedule': {
-            'dummy_job': {
-                'task': 'dummy_job',
-                'schedule': 1,
-            },
+            # 'dummy_job': {
+            #     'task': 'dummy_job',
+            #     'schedule': 1,
+            # },
             'send_form_reminder': {
                 'task': 'send_form_reminder',
                 # At 04:00
