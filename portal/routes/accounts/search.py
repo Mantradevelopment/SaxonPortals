@@ -83,7 +83,8 @@ class Search(Resource):
             employer_sname = ""
             if not (employer_username == "" and employer_username is not None):
                 employer_ = EmployerView.query.filter(EmployerView.ERNO == employer_username,
-                                                      or_(EmployerView.TERMDATE >= datetime.utcnow(), EmployerView.TERMDATE.is_(None))).first()
+                                                      or_(EmployerView.TERMDATE >= datetime.utcnow(),
+                                                          EmployerView.TERMDATE.is_(None))).first()
                 if employer_ is None:
                     return {"members": []}
                 employer_sname = employer_.SNAME
