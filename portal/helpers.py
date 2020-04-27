@@ -83,5 +83,9 @@ def isProd():
     return "production" == os.getenv("BACKEND_ENV", default="")
 
 
+def isStaging():
+    return "staging" == os.getenv("BACKEND_ENV", default="")
+
+
 def uuid_generator():
     return str(uuid.uuid4())
