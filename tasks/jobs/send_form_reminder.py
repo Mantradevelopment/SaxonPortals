@@ -16,7 +16,7 @@ from tasks.worker import app
 
 @app.task(name='send_form_reminder')
 def send_form_reminder():
-    LOG.info("Running the form reminder scheduled job")
+    LOG.info("job:send_form_reminder:started")
     enrollment_form_data = db.session.query(Token, Enrollmentform).filter(
         Token.FormID == Enrollmentform.FormID,
         Token.FormStatus == STATUS_PENDING,
@@ -204,4 +204,4 @@ def send_form_reminder():
                     LOG.error(e)
                     continue
 
-    LOG.info("Scheduler Job done for today")
+    LOG.info("job:send_form_reminder:done")

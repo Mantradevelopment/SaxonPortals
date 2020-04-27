@@ -10,7 +10,7 @@ from tasks.worker import app
 
 @app.task(name='create_member_accounts')
 def create_member_accounts():
-    LOG.debug("Starting creating member accounts")
+    LOG.info("job:create_member_accounts:started")
     offset_ = 0
     count = MemberView.query.count()
     count = int(count / 100) + 1
@@ -44,3 +44,4 @@ def create_member_accounts():
             LOG.warning("There was an unexpected error while processing MembersView items. %s", e)
         finally:
             offset_ += 99
+    LOG.info("job:create_member_accounts:done (offset_: %s)", offset_)

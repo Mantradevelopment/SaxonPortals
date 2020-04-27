@@ -9,6 +9,7 @@ from tasks.worker import app, flask_app
 
 @app.task(name='send_temporary_passwords')
 def send_temporary_passwords():
+    LOG.info("job:send_temporary_passwords:started")
     users = Users.query.filter(Users.Password.is_(None)).all()
     for user in users:
         try:
@@ -30,3 +31,4 @@ def send_temporary_passwords():
         #            f'<p>{APP.config["FRONTEND_URL"]}/login</p>'
         # if user.Email is not None:
         #     send_email(user.Email, "Welcome to Pension Management portal", body=msg_text)
+    LOG.info("job:send_temporary_passwords:done")

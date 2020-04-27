@@ -11,7 +11,7 @@ from tasks.worker import app
 
 @app.task(name='create_employer_accounts')
 def create_employer_accounts():
-    LOG.info("Started creating accounts background job")
+    LOG.info("job:create_employer_accounts:started")
     employers = EmployerView.query.all()
     LOG.debug("Employers fetched: %s", len(employers))
     for employer in employers:
@@ -33,3 +33,4 @@ def create_employer_accounts():
             db.session.rollback()
             LOG.warning(e)
             continue
+    LOG.info("job:create_employer_accounts:done")
