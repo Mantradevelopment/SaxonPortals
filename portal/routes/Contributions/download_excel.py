@@ -62,7 +62,7 @@ class BuildExcel(Resource):
             member_data = db.session.query(HistoryView, EmployerView, MemberView) \
                 .filter(HistoryView.ERKEY == EmployerView.ERKEY, HistoryView.MKEY == MemberView.MKEY,
                         EmployerView.ERKEY == employer_data.ERKEY, MemberView.EMPOYER == employer_data.SNAME,
-                        MemberView.EM_STATUS != "Terminated").all()
+                        HistoryView.EMP_STATUS != "Terminated").all()
             i = 16
             for doc in member_data:
                 w_sheet.write(i, 0, doc.MEMNO)
