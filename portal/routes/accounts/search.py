@@ -11,6 +11,7 @@ from ...models import db, status, roles
 from ...models.member_view import MemberView
 from ...models.employer_view import EmployerView
 from ...models.users import Users
+from ...models.history_view import HistoryView
 from werkzeug.exceptions import Unauthorized, BadRequest, UnprocessableEntity, InternalServerError
 from . import ns
 from ... import APP, LOG
@@ -81,17 +82,22 @@ class Search(Resource):
             employer_username = args_dict["employerusername"]
             employer_sname = ""
             if not (employer_username == "" and employer_username is not None):
-                employer_ = EmployerView.query.filter_by(ERNO=employer_username).first()
+                employer_ = EmployerView.query.filter(EmployerView.ERNO == employer_username,
+                                                      or_(EmployerView.TERMDATE >= datetime.utcnow(), EmployerView.TERMDATE.is_(None))).first()
                 if employer_ is None:
                     return {"members": []}
                 employer_sname = employer_.SNAME
             try:
-                members = MemberView.query.filter(MemberView.MEMNO.ilike("%" + args_dict["ID"] + "%"),
-                                                  or_(MemberView.FNAME.ilike("%" + args_dict["name"] + "%"),
-                                                      MemberView.LNAME.ilike("%" + args_dict["name"] + "%")),
-                                                  MemberView.EMPOYER.ilike("%" + employer_sname + "%"),
-                                                  MemberView.EM_STATUS.ilike("%Full%"),
-                                                  MemberView.PSTATUS.ilike("%active%"))
+                members = db.session.query(MemberView, HistoryView, EmployerView).filter(
+                    HistoryView.ERKEY == EmployerView.ERKEY,
+                    HistoryView.MKEY == MemberView.MKEY,
+                    EmployerView.ERKEY == employer_.ERKEY,
+                    MemberView.MEMNO.ilike("%" + args_dict["ID"] + "%"),
+                    or_(MemberView.FNAME.ilike("%" + args_dict["name"] + "%"),
+                        MemberView.LNAME.ilike("%" + args_dict["name"] + "%")),
+                    MemberView.EMPOYER.ilike("%" + employer_sname + "%"),
+                    MemberView.EM_STATUS.ilike("%Full%"),
+                    MemberView.PSTATUS.ilike("%active%"))
                 if args_dict["email"] != "" and args_dict["email"] is not None:
                     members = members.filter(MemberView.EMAIL.ilike("%" + args_dict["email"] + "%"))
 

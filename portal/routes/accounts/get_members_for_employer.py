@@ -56,7 +56,7 @@ class GetMembersForEmployer(Resource):
         if EmployerID is None:
             raise UnprocessableEntity("Not a valid employerid")
         employer_ = EmployerView.query.filter(EmployerView.ERNO == EmployerID,
-                                              EmployerView.TERMDATE >= datetime.utcnow()).first()
+                                              or_(EmployerView.TERMDATE >= datetime.utcnow(), EmployerView.TERMDATE.is_(None))).first()
         if employer_ is None:
             raise UnprocessableEntity("Not a valid employerid")
         try:

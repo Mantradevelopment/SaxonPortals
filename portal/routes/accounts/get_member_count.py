@@ -3,6 +3,8 @@ import json
 from datetime import datetime
 from flask import Blueprint, jsonify, request, abort, current_app as app
 from flask_restx import Resource, reqparse, fields
+from sqlalchemy import or_
+
 from ...helpers import randomStringwithDigitsAndSymbols, token_verify, token_verify_or_raise
 from ...encryption import Encryption
 from ...models import db, status, roles
@@ -41,7 +43,7 @@ class GetMembersForEmployer(Resource):
 
         if EmployerID is None:
             raise UnprocessableEntity("Not a valid employerid")
-        employer_ = EmployerView.query.filter(EmployerView.ERNO == EmployerID, EmployerView.TERMDATE >= datetime.utcnow()).first()
+        employer_ = EmployerView.query.filter(EmployerView.ERNO == EmployerID, or_(EmployerView.TERMDATE >= datetime.utcnow(), EmployerView.TERMDATE.is_(None))).first()
         if employer_ is None:
             raise UnprocessableEntity("Not a valid employerid")
         employer_sname = employer_.SNAME
