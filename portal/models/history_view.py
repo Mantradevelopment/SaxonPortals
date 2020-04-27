@@ -9,5 +9,5 @@ class HistoryView(db.Model):
     MKEY = db.Column(db.String(255), primary_key=True, Nullable=False)
     ERKEY = db.Column(db.String(255), primary_key=True, Nullable=False)
     EMPLOYER_SNAME = db.Column(db.String(255), primary_key=True, Nullable=False)
-    EDATE = db.Column(db.DateTime)
-    EMP_STATUS =db.Column(db.String(255), primary_key=True, Nullable=False)
+    EDATE = db.Column(db.DateTime, primary_key=True, Nullable=False)
+    EMP_STATUS = db.Column(db.String(255), primary_key=True, Nullable=False)
