@@ -3,10 +3,6 @@ server {
     listen [::]:{{ backend_nginx_port }} default_server;
     server_name {{ backend_domain_name }};
 
-    # ssl config
-    ssl_certificate {{ web_server_ssl_dir }}/{{ domain_name }}.cert.pem;
-    ssl_certificate_key {{ web_server_ssl_dir }}/{{ domain_name }}.key.pem;
-
     # Ignore trusted IPs
     real_ip_recursive on;
     real_ip_header X-Forwarded-For;

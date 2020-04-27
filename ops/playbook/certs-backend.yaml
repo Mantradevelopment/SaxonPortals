@@ -20,7 +20,7 @@
 
       - name: Create SSL directory if it does not exist
         file:
-          path: "{{ web_server_ssl_dir }}"
+          path: "{{ backend_nginx_ssl_dir }}"
           state: directory
           mode: '0755'
           owner: "{{ web_server_ssl_dir_owner }}"
@@ -30,8 +30,8 @@
         shell:
           cmd: |
             /root/.acme.sh/acme.sh --install-cert -d {{ domain_name }} \
-              --cert-file      {{ web_server_ssl_dir }}/{{ domain_name }}.cert.pem  \
-              --key-file       {{ web_server_ssl_dir }}/{{ domain_name }}.key.pem  \
-              --fullchain-file {{ web_server_ssl_dir }}/{{ domain_name }}.fullchain.pem \
+              --cert-file      {{ backend_nginx_ssl_dir }}/{{ domain_name }}.cert.pem  \
+              --key-file       {{ backend_nginx_ssl_dir }}/{{ domain_name }}.key.pem  \
+              --fullchain-file {{ backend_nginx_ssl_dir }}/{{ domain_name }}.fullchain.pem \
               --reloadcmd "service nginx force-reload"
 
