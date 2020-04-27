@@ -99,6 +99,13 @@
         owner: www-data
         group: www-data
 
+    - name: Ensure Nginx Cache directory has correct permissions.
+      file:
+        path: /var/lib/nginx
+        state: directory
+        owner: www-data
+        group: www-data
+
     - name: Ensure .ssh directory exists.
       file:
         path: /home/www-data/.ssh
