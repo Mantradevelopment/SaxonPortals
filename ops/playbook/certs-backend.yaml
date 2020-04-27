@@ -1,0 +1,37 @@
+---
+  - hosts: backend
+    become: yes
+    become_method: sudo
+    gather_facts: no
+    vars_files:
+      - ./vars/backend.yaml
+    tasks:
+      - name: installing acme.sh tool
+        shell:
+          cmd: command -v /root/.acme.sh/acme.sh || curl https://get.acme.sh | sh
+
+      - name: generate certs
+        ignore_errors: yes
+        shell:
+          cmd: |
+            /root/.acme.sh/acme.sh --issue --nginx \
+              -d {{ domain_name }} \
+              --accountemail {{ cert_account_email }}
+
+      - name: Create SSL directory if it does not exist
+        file:
+          path: "{{ web_server_ssl_dir }}"
+          state: directory
+          mode: '0755'
+          owner: "{{ web_server_ssl_dir_owner }}"
+          group: "{{ web_server_ssl_dir_owner }}"
+
+      - name: install certs
+        shell:
+          cmd: |
+            /root/.acme.sh/acme.sh --install-cert -d {{ domain_name }} \
+              --cert-file      {{ web_server_ssl_dir }}/{{ domain_name }}.cert.pem  \
+              --key-file       {{ web_server_ssl_dir }}/{{ domain_name }}.key.pem  \
+              --fullchain-file {{ web_server_ssl_dir }}/{{ domain_name }}.fullchain.pem \
+              --reloadcmd "service nginx force-reload"
+

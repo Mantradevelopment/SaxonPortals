@@ -1,0 +1,43 @@
+name: Configure Staging Certificates
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/config-certs-staging.yml'
+      - 'ops/playbook/inventory/staging'
+      - 'ops/playbook/certs-backend.yaml'
+      - 'ops/playbook/certs-frontend.yaml'
+      - 'ops/playbook/inventory/.trigger-cert-staging'
+
+jobs:
+  config-certs-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploying application
+        uses: saubermacherag/ansible-playbook-docker-action@v1.3
+        with:
+          playbookName: ./ops/playbook/certs-frontend.yaml
+          inventoryFile: ./ops/playbook/inventory/staging
+          keyFile: ./ops/ssh/prod_deploy_private_key
+          keyFileVaultPass: ${{ secrets.ANSIBLE_VAULT_SECRET }}
+          extraVars: "-e domain_name=portal-uat.silverthatch.org.ky -e web_server_ssl_dir_owner=root"
+          extraFile: ./ops/playbook/vars/certs.yaml
+          verbosity: "vv"
+
+  config-certs-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploying application
+        uses: saubermacherag/ansible-playbook-docker-action@v1.3
+        with:
+          playbookName: ./ops/playbook/certs-backend.yaml
+          inventoryFile: ./ops/playbook/inventory/staging
+          keyFile: ./ops/ssh/prod_deploy_private_key
+          keyFileVaultPass: ${{ secrets.ANSIBLE_VAULT_SECRET }}
+          extraVars: "-e domain_name=api.portal-uat.silverthatch.org.ky -e web_server_ssl_dir_owner=www-data"
+          extraFile: ./ops/playbook/vars/certs.yaml
+          verbosity: "vv"

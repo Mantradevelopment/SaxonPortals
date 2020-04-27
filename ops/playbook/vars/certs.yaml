@@ -1,0 +1,2 @@
+cert_account_email: mwright@saxon.ky
+web_server_ssl_dir: /etc/nginx/ssl

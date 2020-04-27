@@ -1,2 +1,5 @@
-[webservers]
+[backend]
 backend-prod
+
+[frontend]
+frontend-prod

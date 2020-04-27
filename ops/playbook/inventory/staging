@@ -1,2 +1,5 @@
-[webservers]
+[backend]
 backend-staging
+
+[frontend]
+frontend-staging
