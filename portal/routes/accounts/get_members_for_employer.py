@@ -10,6 +10,7 @@ from ...encryption import Encryption
 from ...models import db, status, roles
 from ...models.employer_view import EmployerView
 from ...models.member_view import MemberView
+from ...models.history_view import HistoryView
 from ...models.emp_mem_relation import EmpMemRelation
 from werkzeug.exceptions import Unauthorized, BadRequest, UnprocessableEntity, InternalServerError
 from . import ns
@@ -65,10 +66,10 @@ class GetMembersForEmployer(Resource):
                     # if members_.MemberID not in member_list_read_db:
                     member_list_write_db.append(members_.MemberID)
             employer_sname = employer_.SNAME
-            members = MemberView.query.filter(or_(MemberView.EMPOYER == employer_sname,
-                                                  MemberView.MEMNO.in_(tuple(member_list_write_db))),
-                                              MemberView.EM_STATUS.ilike("%FULL%"),
-                                              MemberView.PSTATUS.ilike("%active%")).order_by(MemberView.MEMNO.desc()) \
+            members = db.session.query(HistoryView, EmployerView, MemberView) \
+                .filter(HistoryView.ERKEY == EmployerView.ERKEY, HistoryView.MKEY == MemberView.MKEY,
+                        HistoryView.EMP_STATUS != "Terminated",
+                        MemberView.PSTATUS.ilike("%active%")).order_by(MemberView.MEMNO.desc()) \
                 .offset(offset).limit(50).all()
             member_list = []
             # member_list_read_db = []

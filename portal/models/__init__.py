@@ -44,6 +44,7 @@ def init_app(app):
         from .monthly_statements import MonthlyStatements
         from .employer_dealing_day_rpt import EmployerDealingDayRPT
         from .documents import Documents
+        from .history_view import HistoryView
 
         db.create_all(bind=['writeonly'])
         db.session.commit()

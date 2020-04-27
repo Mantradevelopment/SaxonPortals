@@ -11,6 +11,7 @@ from ...models.member_view import MemberView
 from werkzeug.exceptions import Unauthorized, BadRequest, UnprocessableEntity, InternalServerError
 from . import ns
 from ... import APP, LOG
+from ...models.history_view import HistoryView
 
 parser = reqparse.RequestParser()
 parser.add_argument('Authorization', type=str, location='headers', required=True)
@@ -45,8 +46,9 @@ class GetMembersForEmployer(Resource):
             raise UnprocessableEntity("Not a valid employerid")
         employer_sname = employer_.SNAME
         try:
-            members_count = MemberView.query\
-                .filter(MemberView.EMPOYER == employer_sname, MemberView.EM_STATUS.ilike("%FULL%"),
+            members_count = db.session.query(HistoryView, EmployerView, MemberView) \
+                .filter(HistoryView.ERKEY == EmployerView.ERKEY, HistoryView.MKEY == MemberView.MKEY,
+                        HistoryView.EMP_STATUS != "Terminated",
                         MemberView.PSTATUS.ilike("%active%")).count()
             return {"members": members_count}, 200
         except Exception as e:

@@ -8,7 +8,6 @@ from portal.models.roles import *
 from portal.models.status import *
 from tasks.worker import app
 
-
 @app.task(name='create_employer_accounts')
 def create_employer_accounts():
     LOG.info("job:create_employer_accounts:started")
