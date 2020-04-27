@@ -27,10 +27,12 @@ def create_celery_app(flask_app):
             'tasks.jobs.send_temporary_passwords',
         ),
         'beat_schedule': {
-            # 'dummy_job': {
-            #     'task': 'dummy_job',
-            #     'schedule': 1,
-            # },
+            'dummy_job': {
+                'task': 'dummy_job',
+                # Once every hour
+                'schedule': crontab(minute='0', hour='*', day_of_week='*', day_of_month='*', month_of_year='*'),
+                # 'schedule': 1, # every second
+            },
             'send_form_reminder': {
                 'task': 'send_form_reminder',
                 # At 04:00

@@ -16,32 +16,45 @@ def create_member_accounts():
     count = int(count / 100) + 1
     for i in range(count):
         try:
-            LOG.debug("Going to fetch %s members from offset %s", count, offset_)
+            LOG.debug("job:create_member_accounts:Going to fetch %s members from offset %s", count, offset_)
             members = MemberView.query.offset(offset_).limit(100).all()
             LOG.debug("%s members fetched successfully from offset %s", len(members), offset_)
             for member in members:
-                try:
-                    # userExists = Users.query.filter_by(Username=member.MEMNO).scalar()
-                    # if userExists is not None:
-                    #     LOG.debug("Member with username '%s' exists. Skip adding...", member.MEMNO)
-                    #     continue
-
-                    LOG.debug("Member with username '%s' does not exist. Inserting...", member.MEMNO)
-                    user = Users(UserID=member.MKEY,
-                                    Username=member.MEMNO,
-                                    Email=member.EMAIL,
-                                    DisplayName=(member.FNAME if member.FNAME is not None else "") + " " + (
-                                        member.LNAME if member.LNAME is not None else ""),
-                                    Role=ROLES_MEMBER,
-                                    Status=STATUS_ACTIVE)
-                    db.session.merge(user)
-                    db.session.commit()
-                except Exception as e:
-                    db.session.rollback()
-                    LOG.warning("There was an unexpected error while creating new user from MembersView. %s", e)
+                _upsert_member(member)
 
         except Exception as e:
             LOG.warning("There was an unexpected error while processing MembersView items. %s", e)
         finally:
             offset_ += 99
     LOG.info("job:create_member_accounts:done (offset_: %s)", offset_)
+
+
+def _upsert_member(member):
+    try:
+        user = Users.query.filter_by(Username=member.MEMNO).scalar()
+        if user is None:
+            LOG.debug("job:create_member_accounts:Member with username '%s' does not exist. Inserting...", member.MEMNO)
+            user = Users(UserID=member.MKEY,
+                            Username=member.MEMNO,
+                            Email=member.EMAIL,
+                            DisplayName=_get_display_name(member),
+                            Role=ROLES_MEMBER,
+                            Status=STATUS_ACTIVE)
+            db.session.add(user)
+        else:
+            LOG.debug("job:create_member_accounts:Member with username '%s' found. Updating...", member.MEMNO)
+            user.Email = member.EMAIL
+            user.DisplayName = _get_display_name(member)
+            user.Role = ROLES_MEMBER
+            user.Status = STATUS_ACTIVE
+
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        LOG.warning("job:create_member_accounts:There was an unexpected error while upserting a member: %s", e)
+
+
+def _get_display_name(member):
+    return (member.FNAME if member.FNAME is not None else "") + \
+        " " + \
+        (member.LNAME if member.LNAME is not None else "")
