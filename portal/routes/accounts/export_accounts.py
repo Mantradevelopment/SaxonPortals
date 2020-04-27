@@ -16,6 +16,7 @@ from ...helpers import randomStringwithDigitsAndSymbols, token_verify, token_ver
 from ...encryption import Encryption
 from ...models import db, status, roles
 from ...models.employer_view import EmployerView
+from ...models.history_view import HistoryView
 from werkzeug.exceptions import Unauthorized, BadRequest, UnprocessableEntity, InternalServerError
 from . import ns
 from ... import APP, LOG
@@ -64,17 +65,23 @@ class ExportAccounts(Resource):
             employer_username = args_dict["employerusername"]
             employer_sname = ""
             if not employer_username == "" and employer_username is not None:
-                employer_ = EmployerView.query.filter_by(ERNO=employer_username).first()
+                employer_ = EmployerView.query.filter(EmployerView.ERNO == employer_username,
+                                                      or_(EmployerView.TERMDATE >= datetime.utcnow(),
+                                                          EmployerView.TERMDATE.is_(None))).first()
                 if employer_ is None:
                     raise UnprocessableEntity("Invalid employer")
                 employer_sname = employer_.SNAME
             try:
-                members = MemberView.query.filter(MemberView.MEMNO.ilike("%" + args_dict["ID"] + "%"),
-                                                  or_(MemberView.FNAME.ilike("%" + args_dict["name"] + "%"),
-                                                      MemberView.LNAME.ilike("%" + args_dict["name"] + "%")),
-                                                  MemberView.EMPOYER.ilike("%" + employer_sname + "%"),
-                                                  MemberView.EM_STATUS.ilike("%Full%"),
-                                                  MemberView.PSTATUS.ilike("%active%"))
+                members = db.session.query(MemberView, HistoryView, EmployerView).filter(
+                    HistoryView.ERKEY == EmployerView.ERKEY,
+                    HistoryView.MKEY == MemberView.MKEY,
+                    MemberView.MEMNO.ilike("%" + args_dict["ID"] + "%"),
+                    or_(MemberView.FNAME.ilike("%" + args_dict["name"] + "%"),
+                        MemberView.LNAME.ilike("%" + args_dict["name"] + "%")),
+                    MemberView.EMPOYER.ilike("%" + employer_sname + "%"),
+                    HistoryView.EMP_STATUS != "Terminated",
+                    MemberView.PSTATUS.ilike("%active%"))
+
                 if args_dict["email"] != "" and args_dict["email"] is not None:
                     members = members.filter(MemberView.EMAIL.ilike("%" + args_dict["email"] + "%"))
                 members = members.all()
@@ -82,7 +89,8 @@ class ExportAccounts(Resource):
                     for mem in members:
                         accounts_list.append({
                             'Number': mem.MEMNO,
-                            'Name': (mem.FNAME if mem.FNAME is not None else "") + " " + (mem.LNAME if mem.LNAME is not None else ""),
+                            'Name': (mem.FNAME if mem.FNAME is not None else "") + " " + (
+                                mem.LNAME if mem.LNAME is not None else ""),
                             'Email': mem.EMAIL
                             # 'MEMNO': mem.MEMNO,
                             # 'FNAME': mem.FNAME,
@@ -117,12 +125,14 @@ class ExportAccounts(Resource):
                     employers = EmployerView.query.filter(EmployerView.EMAIL.ilike("%" + args_dict["email"] + "%"),
                                                           EmployerView.ERNO.ilike(
                                                               "%" + args_dict["employerusername"] + "%"),
-                                                          EmployerView.ENAME.ilike("%" + args_dict["name"] + "%")
-                                                          ).all()
+                                                          EmployerView.ENAME.ilike("%" + args_dict["name"] + "%"),
+                                                          or_(EmployerView.TERMDATE >= datetime.utcnow(),
+                                                              EmployerView.TERMDATE.is_(None))).all()
                 else:
                     employers = EmployerView.query.filter(EmployerView.ERNO.ilike(
                         "%" + args_dict["employerusername"] + "%"),
-                        EmployerView.ENAME.ilike("%" + args_dict["name"] + "%")
+                        EmployerView.ENAME.ilike("%" + args_dict["name"] + "%"),
+                        or_(EmployerView.TERMDATE >= datetime.utcnow(), EmployerView.TERMDATE.is_(None))
                     ).all()
                 if employers is not None:
                     for emp in employers:

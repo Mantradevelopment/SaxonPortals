@@ -75,14 +75,14 @@ class GetMembersForEmployer(Resource):
                 .offset(offset).limit(50).all()
             member_list = []
             # member_list_read_db = []
-            for mem in members:
+            for his, emp, mem in members:
                 member_list.append({
                     'MEMNO': mem.MEMNO,
                     'FNAME': mem.FNAME,
                     'LNAME': mem.LNAME,
                     'EMAIL': mem.EMAIL,
                     'PSTATUS': mem.PSTATUS,
-                    'EM_STATUS': mem.EM_STATUS
+                    'EM_STATUS': his.EMP_STATUS
                 })
                 # member_list_read_db.append(mem.MEMNO)
 

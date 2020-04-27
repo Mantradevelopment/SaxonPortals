@@ -7,11 +7,13 @@ import time
 import xlrd
 from flask import Blueprint, jsonify, request, send_file
 from flask_restx import Resource, reqparse, inputs, fields
+from sqlalchemy import or_
 from werkzeug.exceptions import NotFound, BadRequest, Unauthorized, UnprocessableEntity, InternalServerError
 from ...helpers import token_verify_or_raise, RESPONSE_OK, delete_excel
 from ...models import db, status, roles
 from ...models.member_view import MemberView
 from ...models.employer_view import EmployerView
+from ...models.history_view import HistoryView
 from xlutils.copy import copy
 from . import ns
 from ... import APP, LOG
@@ -51,11 +53,15 @@ class BuildExcel(Resource):
 
         # empuser = db1.collection("members").where("employers", "array_contains",
         #                                           db1.collection("employers").document(employer_username)).stream()
-        employer_data = EmployerView.query.filter_by(ERNO=employer_username).first()
+        employer_data = EmployerView.query.filter(EmployerView.ERNO == employer_username,
+                                                  or_(EmployerView.TERMDATE >= datetime.utcnow(),
+                                                      EmployerView.TERMDATE.is_(None))).first()
         if employer_data is None:
             raise UnprocessableEntity("Can't find employer", employer_username)
-        member_data = MemberView.query.filter(MemberView.EMPOYER == employer_data.SNAME,
-                                              MemberView.EM_STATUS != "Terminated").all()
+        member_data = db.session.query(HistoryView, EmployerView, MemberView) \
+            .filter(HistoryView.ERKEY == EmployerView.ERKEY, HistoryView.MKEY == MemberView.MKEY,
+                    EmployerView.ERKEY == employer_data.ERKEY, MemberView.EMPOYER == employer_data.SNAME,
+                    MemberView.EM_STATUS != "Terminated").all()
         i = 16
         for doc in member_data:
             w_sheet.write(i, 0, doc.MEMNO)

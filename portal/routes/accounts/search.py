@@ -88,15 +88,14 @@ class Search(Resource):
                     return {"members": []}
                 employer_sname = employer_.SNAME
             try:
-                members = db.session.query(MemberView, HistoryView, EmployerView).filter(
+                members = db.session.query(HistoryView, EmployerView, MemberView).filter(
                     HistoryView.ERKEY == EmployerView.ERKEY,
                     HistoryView.MKEY == MemberView.MKEY,
-                    EmployerView.ERKEY == employer_.ERKEY,
                     MemberView.MEMNO.ilike("%" + args_dict["ID"] + "%"),
                     or_(MemberView.FNAME.ilike("%" + args_dict["name"] + "%"),
                         MemberView.LNAME.ilike("%" + args_dict["name"] + "%")),
                     MemberView.EMPOYER.ilike("%" + employer_sname + "%"),
-                    MemberView.EM_STATUS.ilike("%Full%"),
+                    HistoryView.EMP_STATUS != "Terminated",
                     MemberView.PSTATUS.ilike("%active%"))
                 if args_dict["email"] != "" and args_dict["email"] is not None:
                     members = members.filter(MemberView.EMAIL.ilike("%" + args_dict["email"] + "%"))
@@ -105,14 +104,14 @@ class Search(Resource):
                     return {"members": []}
                 member_list = []
                 members = members.order_by(MemberView.MEMNO.desc()).offset(offset_).limit(50).all()
-                for mem in members:
+                for his, emp, mem in members:
                     member_list.append({
                         'MEMNO': mem.MEMNO,
                         'FNAME': mem.FNAME,
                         'LNAME': mem.LNAME,
                         'EMAIL': mem.EMAIL,
                         'PSTATUS': mem.PSTATUS,
-                        'EM_STATUS': mem.EM_STATUS
+                        'EM_STATUS': his.EMP_STATUS
                     })
 
                 return {"members": member_list}
