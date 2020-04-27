@@ -20,7 +20,11 @@ def create_member_accounts():
             members = MemberView.query.offset(offset_).limit(100).all()
             LOG.debug("%s members fetched successfully from offset %s", len(members), offset_)
             for member in members:
-                _upsert_member(member)
+                try:
+                    _upsert_member(member)
+                except Exception as e:
+                    db.session.rollback()
+                    LOG.warning("job:create_member_accounts:There was an unexpected error while upserting a member: %s", e)
 
         except Exception as e:
             LOG.warning("There was an unexpected error while processing MembersView items. %s", e)
@@ -30,28 +34,24 @@ def create_member_accounts():
 
 
 def _upsert_member(member):
-    try:
-        user = Users.query.filter_by(Username=member.MEMNO).scalar()
-        if user is None:
-            LOG.debug("job:create_member_accounts:Member with username '%s' does not exist. Inserting...", member.MEMNO)
-            user = Users(UserID=member.MKEY,
-                            Username=member.MEMNO,
-                            Email=member.EMAIL,
-                            DisplayName=_get_display_name(member),
-                            Role=ROLES_MEMBER,
-                            Status=STATUS_ACTIVE)
-            db.session.add(user)
-        else:
-            LOG.debug("job:create_member_accounts:Member with username '%s' found. Updating...", member.MEMNO)
-            user.Email = member.EMAIL
-            user.DisplayName = _get_display_name(member)
-            user.Role = ROLES_MEMBER
-            user.Status = STATUS_ACTIVE
+    user = Users.query.filter_by(Username=member.MEMNO).scalar()
+    if user is None:
+        LOG.debug("job:create_member_accounts:Member with username '%s' does not exist. Inserting...", member.MEMNO)
+        user = Users(UserID=member.MKEY,
+                        Username=member.MEMNO,
+                        Email=member.EMAIL,
+                        DisplayName=_get_display_name(member),
+                        Role=ROLES_MEMBER,
+                        Status=STATUS_ACTIVE)
+        db.session.add(user)
+    else:
+        LOG.debug("job:create_member_accounts:Member with username '%s' found. Updating...", member.MEMNO)
+        user.Email = member.EMAIL
+        user.DisplayName = _get_display_name(member)
+        user.Role = ROLES_MEMBER
+        user.Status = STATUS_ACTIVE
 
-        db.session.commit()
-    except Exception as e:
-        db.session.rollback()
-        LOG.warning("job:create_member_accounts:There was an unexpected error while upserting a member: %s", e)
+    db.session.commit()
 
 
 def _get_display_name(member):
