@@ -55,7 +55,8 @@ class GetMembersForEmployer(Resource):
 
         if EmployerID is None:
             raise UnprocessableEntity("Not a valid employerid")
-        employer_ = EmployerView.query.filter_by(ERNO=EmployerID).first()
+        employer_ = EmployerView.query.filter(EmployerView.ERNO == EmployerID,
+                                              EmployerView.TERMDATE >= datetime.utcnow()).first()
         if employer_ is None:
             raise UnprocessableEntity("Not a valid employerid")
         try:
@@ -69,6 +70,7 @@ class GetMembersForEmployer(Resource):
             members = db.session.query(HistoryView, EmployerView, MemberView) \
                 .filter(HistoryView.ERKEY == EmployerView.ERKEY, HistoryView.MKEY == MemberView.MKEY,
                         HistoryView.EMP_STATUS != "Terminated",
+                        EmployerView.ERKEY == employer_.ERKEY,
                         MemberView.PSTATUS.ilike("%active%")).order_by(MemberView.MEMNO.desc()) \
                 .offset(offset).limit(50).all()
             member_list = []
