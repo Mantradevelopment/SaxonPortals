@@ -129,11 +129,7 @@ class Search(Resource):
                 if args_dict["email"] != "" and args_dict["email"] is not None:
                     employers = employers.filter(EmployerView.EMAIL.ilike("%" + args_dict["email"] + "%"))
                 if args_dict["status"] != "" and args_dict["status"] is not None:
-                    if str(args_dict["status"]).upper() == status.STATUS_INACTIVE:
-                        employers = employers \
-                            .filter(EmployerView.TERMDATE < datetime.utcnow(),
-                                    EmployerView.TERMDATE.isnot(None))
-                    elif str(args_dict["status"]).upper() == status.STATUS_ACTIVE:
+                    if str(args_dict["status"]).upper() == status.STATUS_ACTIVE:
                         employers = employers \
                             .filter(or_(EmployerView.TERMDATE > datetime.utcnow(),
                                         EmployerView.TERMDATE.is_(None)))

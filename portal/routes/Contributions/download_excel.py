@@ -64,7 +64,7 @@ class BuildExcel(Resource):
                         EmployerView.ERKEY == employer_data.ERKEY, MemberView.EMPOYER == employer_data.SNAME,
                         HistoryView.EMP_STATUS != "Terminated").all()
             i = 16
-            for doc in member_data:
+            for his, emp, doc in member_data:
                 w_sheet.write(i, 0, doc.MEMNO)
                 w_sheet.write(i, 1, doc.LNAME)
                 w_sheet.write(i, 2, doc.FNAME)

@@ -86,7 +86,7 @@ class ExportAccounts(Resource):
                     members = members.filter(MemberView.EMAIL.ilike("%" + args_dict["email"] + "%"))
                 members = members.all()
                 if members is not None:
-                    for mem in members:
+                    for mem, his, emp in members:
                         accounts_list.append({
                             'Number': mem.MEMNO,
                             'Name': (mem.FNAME if mem.FNAME is not None else "") + " " + (
