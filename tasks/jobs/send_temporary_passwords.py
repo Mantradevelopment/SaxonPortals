@@ -72,6 +72,7 @@ def _track_email(email, user_id):
         CreatedDate=datetime.utcnow(),
     )
     db.session.add(t)
+    db.session.commit()
     return
 
 
