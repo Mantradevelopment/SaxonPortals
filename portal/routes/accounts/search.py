@@ -92,12 +92,14 @@ class Search(Resource):
                 members = db.session.query(HistoryView, EmployerView, MemberView).filter(
                     HistoryView.ERKEY == EmployerView.ERKEY,
                     HistoryView.MKEY == MemberView.MKEY,
-                    or_(or_(MemberView.FNAME.ilike("%" + args_dict["name"] + "%"),
-                            MemberView.LNAME.ilike("%" + args_dict["name"] + "%"),
-                            MemberView.MEMNO.ilike("%" + args_dict["ID"] + "%")),
-                        MemberView.EMPOYER.ilike("%" + employer_sname + "%")),
+                    EmployerView.ERKEY == employer_.ERKEY,
+                    or_(MemberView.FNAME.ilike("%" + args_dict["name"] + "%"),
+                        MemberView.LNAME.ilike("%" + args_dict["name"] + "%"),
+                        MemberView.MEMNO.ilike("%" + args_dict["ID"] + "%")),
+                    MemberView.EMPOYER.ilike("%" + employer_sname + "%"),
                     HistoryView.EMP_STATUS != "Terminated",
                     MemberView.PSTATUS.ilike("%active%"))
+
                 if args_dict["email"] != "" and args_dict["email"] is not None:
                     members = members.filter(MemberView.EMAIL.ilike("%" + args_dict["email"] + "%"))
 
