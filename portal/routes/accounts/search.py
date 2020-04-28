@@ -94,9 +94,8 @@ class Search(Resource):
                     HistoryView.MKEY == MemberView.MKEY,
                     EmployerView.ERKEY == employer_.ERKEY,
                     or_(MemberView.FNAME.ilike("%" + args_dict["name"] + "%"),
-                        MemberView.LNAME.ilike("%" + args_dict["name"] + "%"),
-                        MemberView.MEMNO.ilike("%" + args_dict["ID"] + "%")),
-                    MemberView.EMPOYER.ilike("%" + employer_sname + "%"),
+                        MemberView.LNAME.ilike("%" + args_dict["name"] + "%")),
+                    MemberView.MEMNO.ilike("%" + args_dict["ID"] + "%"),
                     HistoryView.EMP_STATUS != "Terminated",
                     MemberView.PSTATUS.ilike("%active%"))
 
