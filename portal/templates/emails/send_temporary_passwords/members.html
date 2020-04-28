@@ -1,0 +1,20 @@
+{% include 'emails/header.html' %}
+
+<p>Dear Valued Member,</p>
+
+<p>Welcome to the new and improved member Portal. The Pension Management Portal (PMP) was designed for your convenience and with the ongoing fight against Covid-19, you can review your latest statement, update account details and even adjust your additional voluntary contributions, all from the safety of your home.</p>
+<p>Using the portal is easy, to access our new portal, please follow the instructions below, where we have provided you with your username and temporary password. We encourage you to change your password once you have gained access to the new portal.</p>
+<div>
+    <b>URL:</b> <a href="{{ frontend_url }}login" target="_blank">{{ frontend_url }}login</a> <br />
+    <b>Username:</b> <pre class="inline">{{ username }}</pre> <br>
+    <b>Your temporary password is:</b> <pre class="inline">{{ password }}</pre>
+</div>
+<br>
+<p>As always, our team of pension administrators are here to help. Should you have a questions or need assistance, please do not hesitate to contact us via: <br>
+    <b>Email</b>: support@silverthatch.org.ky <br>
+    <b>Phone</b>: 345-943-7770 <br>
+    <b>WhatsApp</b>: 345-943-7770</p>
+<p>Best Regards</p>
+
+{% include 'emails/footer.html' %}
+

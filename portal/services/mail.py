@@ -6,9 +6,9 @@ from email.mime.text import MIMEText
 from flask import request, render_template, current_app as app
 
 
-def send_email(to_address, subject, body=None, template=None):
+def send_email(to_address, subject, body=None):
     if body is None:
-        raise Exception('One of body/template is required')
+        raise Exception('body is required')
 
     if app.config["MAILSERVER"] == "GMAIL":
         return _send_mail_via_gmail(to_address, subject, body)
