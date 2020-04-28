@@ -45,6 +45,7 @@ def init_app(app):
         from .employer_dealing_day_rpt import EmployerDealingDayRPT
         from .documents import Documents
         from .history_view import HistoryView
+        from .email_track import EmailTrack
 
         db.create_all(bind=['writeonly'])
         db.session.commit()
