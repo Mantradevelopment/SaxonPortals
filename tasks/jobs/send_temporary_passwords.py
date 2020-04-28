@@ -17,25 +17,43 @@ DISABLE_SENDING_EMAIL_TEMPORARILY = False
 @app.task(name='send_temporary_passwords')
 def send_temporary_passwords():
     LOG.info("job:send_temporary_passwords:started")
-    LOG.info("job:send_temporary_passwords:members:started")
-    users = _get_eligible_members()
-    for user in users:
-        try:
-            random_password = randomStringwithDigitsAndSymbols()
-            enc_random_pass = Encryption().encrypt(random_password)
-            user.Password = enc_random_pass
-            user.TemporaryPassword = True
-            user.UserCreatedTime = datetime.utcnow()
-            db.session.commit()
-            _send_email(user.Email, user.DisplayName, user.Username, random_password, user.UserID, 'members')
-        except Exception as e:
-            LOG.error(e)
-            continue
-    LOG.info("job:send_temporary_passwords:members:done")
+    # LOG.info("job:send_temporary_passwords:members:started")
+    # users = _get_eligible_members()
+    # for user in users:
+    #     try:
+    #         random_password = randomStringwithDigitsAndSymbols()
+    #         enc_random_pass = Encryption().encrypt(random_password)
+    #         user.Password = enc_random_pass
+    #         user.TemporaryPassword = True
+    #         user.UserCreatedTime = datetime.utcnow()
+    #         db.session.commit()
+    #         _send_email(user.Email, user.DisplayName, user.Username, random_password, user.UserID, 'members')
+    #     except Exception as e:
+    #         LOG.error(e)
+    #         continue
+    # LOG.info("job:send_temporary_passwords:members:done")
 
     LOG.info("job:send_temporary_passwords:employers:started")
-    users = _get_eligible_employers()
-    for user in users:
+    _send_to_employers()
+    LOG.info("job:send_temporary_passwords:employers:done")
+    LOG.info("job:send_temporary_passwords:done")
+
+
+def _send_to_employers():
+    # query should be without semicolon
+    employers_sql_query='select erkey from CV$IF_EMPLOYER where termdate is null or termdate >= sysdate'
+    employers_result = db.get_engine(bind='readonly').execute(text(employers_sql_query))
+    employers_erkeys = [row[0] for row in employers_result]
+    LOG.info('job:send_temporary_passwords:debug:Fetched %s number of ERKEYS from EmployerView', len(employers_erkeys))
+    _employer_counter = 0
+    for erkey in employers_erkeys:
+        user = Users.query.filter_by(UserID=erkey).first()
+        if user is None:
+            LOG.info('job:send_temporary_passwords:debug: User for erkey=%s notfound', erkey)
+            continue
+        if EmailTrack.query.filter_by(UserID=user.UserID, EmailType='temporary_password').count() != 0:
+            LOG.info('job:send_temporary_passwords:debug: Ignore user erkey=%s, email has been sent before', erkey)
+            continue
         try:
             random_password = randomStringwithDigitsAndSymbols()
             enc_random_pass = Encryption().encrypt(random_password)
@@ -44,28 +62,13 @@ def send_temporary_passwords():
             user.UserCreatedTime = datetime.utcnow()
             db.session.commit()
             _send_email(user.Email, user.DisplayName, user.Username, random_password, user.UserID, 'employers')
+            _employer_counter += 1
         except Exception as e:
             LOG.error(e)
             continue
 
-    LOG.info("job:send_temporary_passwords:employers:done")
-    LOG.info("job:send_temporary_passwords:done")
-
-
-def _get_eligible_employers():
-    # query should be without semicolon
-    employers_sql_query='select erkey from CV$IF_EMPLOYER where termdate is null or termdate >= sysdate'
-    employers_result = db.get_engine(bind='readonly').execute(text(employers_sql_query))
-    employers_erkeys = [row[0] for row in employers_result]
-    LOG.info('job:send_temporary_passwords:debug:Fetched %s number of ERKEYS from EmployerView', len(employers_erkeys))
-    candidate_users = Users.query.filter(Users.UserID.in_(employers_erkeys)).all()
-    LOG.info('job:send_temporary_passwords:debug:Selected %s number of users as potential candidates', len(candidate_users))
-    users = []
-    for candidate_user in candidate_users:
-        if EmailTrack.query.filter_by(UserID=candidate_user.UserID, EmailType='temporary_password').count() == 0:
-            users.append(candidate_user)
-    LOG.info('job:send_temporary_passwords:debug:Selected %s number of users in total', len(users))
-    return users
+    LOG.info('job:send_temporary_passwords:debug:Sent email to %s employers', _employer_counter)
+    return True
 
 def _get_eligible_members():
     # query should be without semicolon
