@@ -33,6 +33,7 @@ class DevelopmentSeeder(object):
                            )
 
         employer_user = Users(UserID="INTERNAL2",
+                              Email="neetha.pasham@manomay.biz",
                               Username="saxonemployer",
                               Password="6Q9usKHCRmlaNgufji0mJg==",
                               Status=STATUS_ACTIVE,
@@ -49,7 +50,7 @@ class DevelopmentSeeder(object):
                                    Role=ROLES_REVIEW_MANAGER,
                                    SecurityQuestionID=1,
                                    DisplayName="Saxon Reviewer Manager",
-                                   Email="aramos@saxon.ky"
+                                   Email="dellwood06@gmail.com"
                                    )
 
         employer1 = Users(UserID="INTERNAL4",

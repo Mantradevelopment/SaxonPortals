@@ -51,8 +51,8 @@ def create_celery_app(flask_app):
             },
             'send_temporary_passwords': {
                 'task': 'send_temporary_passwords',
-                # At minute 59 past every 4th hour (00:59:00, 04:59:00, 08:59:00, ...)
-                'schedule': crontab(minute='59', hour='*/4', day_of_week='*', day_of_month='*', month_of_year='*'),
+                # At minute 30 past 8AM UTC (=3:30AM Cayman Time), every day  (00:59:00, 04:59:00, 08:59:00, ...)
+                'schedule': crontab(minute='30', hour='8', day_of_week='*', day_of_month='*', month_of_year='*'),
             },
         },
     })
