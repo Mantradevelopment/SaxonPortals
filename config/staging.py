@@ -24,7 +24,7 @@ SERVER_ADDRESS = "0.0.0.0"
 SERVER_PORT = 90
 SERVER_WEB_URL = 'https://portal.silverthatch.org.ky/'
 FRONTEND_URL = 'http://portal-uat.silverthatch.org.ky/'
-MAIL_ENROLLMENT_URL = 'https://silverthatch.org.ky/?d=756'
+MAIL_ENROLLMENT_URL = 'https://silverthatch.org.ky/guides-handbooks/'
 
 CELERY_BROKER_URL = 'filesystem://'
 CELERY_BROKER_FOLDER = os.path.join(DATA_DIR, 'broker')
