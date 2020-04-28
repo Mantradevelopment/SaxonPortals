@@ -50,7 +50,7 @@ class DevelopmentSeeder(object):
                                    Role=ROLES_REVIEW_MANAGER,
                                    SecurityQuestionID=1,
                                    DisplayName="Saxon Reviewer Manager",
-                                   Email="dellwood06@gmail.com"
+                                   Email="aramos@saxon.ky"
                                    )
 
         employer1 = Users(UserID="INTERNAL4",
