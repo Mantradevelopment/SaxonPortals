@@ -21,6 +21,7 @@ def create_celery_app(flask_app):
         'accept_content': ['json'],
         'imports': (
             'tasks.jobs.dummy_job',
+            'tasks.jobs.send_email',
             'tasks.jobs.send_form_reminder',
             'tasks.jobs.create_employer_accounts',
             'tasks.jobs.create_member_accounts',
@@ -31,7 +32,7 @@ def create_celery_app(flask_app):
                 'task': 'dummy_job',
                 # Once every hour
                 'schedule': crontab(minute='0', hour='*', day_of_week='*', day_of_month='*', month_of_year='*'),
-                # 'schedule': 1, # every second
+                # 'schedule': 5, # every second
             },
             'send_form_reminder': {
                 'task': 'send_form_reminder',
