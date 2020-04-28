@@ -75,10 +75,10 @@ class ExportAccounts(Resource):
                 members = db.session.query(MemberView, HistoryView, EmployerView).filter(
                     HistoryView.ERKEY == EmployerView.ERKEY,
                     HistoryView.MKEY == MemberView.MKEY,
-                    MemberView.MEMNO.ilike("%" + args_dict["ID"] + "%"),
+                    EmployerView.ERKEY == employer_.ERKEY,
                     or_(MemberView.FNAME.ilike("%" + args_dict["name"] + "%"),
                         MemberView.LNAME.ilike("%" + args_dict["name"] + "%")),
-                    MemberView.EMPOYER.ilike("%" + employer_sname + "%"),
+                    MemberView.MEMNO.ilike("%" + args_dict["ID"] + "%"),
                     HistoryView.EMP_STATUS != "Terminated",
                     MemberView.PSTATUS.ilike("%active%"))
 
