@@ -17,22 +17,7 @@ DISABLE_SENDING_EMAIL_TEMPORARILY = False
 @app.task(name='send_temporary_passwords')
 def send_temporary_passwords():
     LOG.info("job:send_temporary_passwords:started")
-    # LOG.info("job:send_temporary_passwords:members:started")
-    # users = _get_eligible_members()
-    # for user in users:
-    #     try:
-    #         random_password = randomStringwithDigitsAndSymbols()
-    #         enc_random_pass = Encryption().encrypt(random_password)
-    #         user.Password = enc_random_pass
-    #         user.TemporaryPassword = True
-    #         user.UserCreatedTime = datetime.utcnow()
-    #         db.session.commit()
-    #         _send_email(user.Email, user.DisplayName, user.Username, random_password, user.UserID, 'members')
-    #     except Exception as e:
-    #         LOG.error(e)
-    #         continue
-    # LOG.info("job:send_temporary_passwords:members:done")
-
+    _send_to_members()
     LOG.info("job:send_temporary_passwords:employers:started")
     _send_to_employers()
     LOG.info("job:send_temporary_passwords:employers:done")
@@ -70,22 +55,36 @@ def _send_to_employers():
     LOG.info('job:send_temporary_passwords:debug:Sent email to %s employers', _employer_counter)
     return True
 
-def _get_eligible_members():
+def _send_to_members():
     # query should be without semicolon
     members_sql="select mkey from CV$IF_MEM_EMP_HIS where erkey in ('021',	'025',	'038',	'039',	'040',	'045',	'046',	'053',	'058',	'059',	'062',	'101',	'112',	'121',	'177',	'178',	'179',	'215',	'234',	'236',	'241',	'251',	'259',	'267',	'281',	'312',	'381',	'460',	'522',	'567',	'584',	'619',	'650',	'665',	'845',	'886',	'922',	'928',	'941',	'962',	'AAX',	'ABL',	'ACX',	'ADT',	'AFH',	'AGA',	'AIZ',	'BDA',	'BEQ',	'BFH') and emp_status = 'Full-Time'"
     members_result = db.get_engine(bind='readonly').execute(text(members_sql))
     members_emkeys = [row[0] for row in members_result]
-    LOG.info('job:send_temporary_passwords:debug:Fetched %s number of EMKEYS from MemberView', len(members_emkeys))
-    candidate_users = Users.query.filter(Users.UserID.in_(members_emkeys)).all()
-    LOG.info('job:send_temporary_passwords:debug:Selected %s number of users as potential candidates', len(candidate_users))
+    LOG.info('job:send_temporary_passwords:members:Fetched %s number of EMKEYS from MemberView', len(members_emkeys))
+    _member_counter = 0
 
-    users = []
-    for candidate_user in candidate_users:
-        if EmailTrack.query.filter_by(UserID=candidate_user.UserID, EmailType='temporary_password').count() == 0:
-            users.append(candidate_user)
-
-    LOG.info('job:send_temporary_passwords:debug:Selected %s number of users in total', len(users))
-    return users
+    for emkey in members_emkeys:
+        user = Users.query.filter_by(UserID=emkey).first()
+        if user is None:
+            LOG.info('job:send_temporary_passwords:members: User for emkey=%s notfound', emkey)
+            continue
+        if EmailTrack.query.filter_by(UserID=user.UserID, EmailType='temporary_password').count() != 0:
+            LOG.info('job:send_temporary_passwords:members: Ignore user emkey=%s, email has been sent before', emkey)
+            continue
+        try:
+            random_password = randomStringwithDigitsAndSymbols()
+            enc_random_pass = Encryption().encrypt(random_password)
+            user.Password = enc_random_pass
+            user.TemporaryPassword = True
+            user.UserCreatedTime = datetime.utcnow()
+            db.session.commit()
+            _send_email(user.Email, user.DisplayName, user.Username, random_password, user.UserID, 'members')
+            _member_counter += 1
+        except Exception as e:
+            LOG.error(e)
+            continue
+    LOG.info('job:send_temporary_passwords:members:Scheduled to send email to %s members', len(_member_counter))
+    return True
 
 
 
