@@ -19,4 +19,4 @@ buffer-size = 65535
 
 ; celery daemons
 attach-daemon = %(virtualenv)/bin/celery worker --app=tasks.worker.app --concurrency=3
-smart-attach-daemon = /tmp/celerybeat.pid %(virtualenv)/bin/celery beat --app=tasks.worker.app --pidfile=/tmp/celerybeat.pid
+attach-daemon = %(virtualenv)/bin/celery beat --app=tasks.worker.app
