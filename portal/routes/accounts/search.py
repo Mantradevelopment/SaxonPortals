@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 from flask import Blueprint, jsonify, request, abort, current_app as app
 from flask_restx import Resource, reqparse, fields
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 
 from ...helpers import randomStringwithDigitsAndSymbols, token_verify, token_verify_or_raise, converter
 from ...encryption import Encryption
@@ -122,12 +122,32 @@ class Search(Resource):
                     LOG.error(e)
                     raise InternalServerError("Can't retrieve members", e)
             if employer_username == "" or employer_username is None:
-                try:
-                    members = MemberView.query.filter(
-                        or_(MemberView.FNAME.ilike("%" + args_dict["name"] + "%"),
-                            MemberView.LNAME.ilike("%" + args_dict["name"] + "%")),
-                        MemberView.MEMNO.ilike("%" + args_dict["ID"] + "%"),
-                        MemberView.PSTATUS != "Terminated")
+                name = args_dict["name"]
+                if " " in name:
+                    firstname, lastname = name.split(" ")
+                    if lastname is None or lastname == "":
+                        lastname = firstname
+                    if firstname is None or firstname == "":
+                        firstname = lastname
+                    try:
+                        members = MemberView.query.filter(
+                            and_(MemberView.FNAME.ilike("%" + firstname + "%"),
+                                MemberView.LNAME.ilike("%" + lastname + "%")),
+                            MemberView.MEMNO.ilike("%" + args_dict["ID"] + "%"),
+                            MemberView.PSTATUS != "Terminated")
+                    except Exception as e:
+                        LOG.error(e)
+                        raise InternalServerError("Can't retrieve members", e)
+                else:
+                    try:
+                        members = MemberView.query.filter(
+                            or_(MemberView.FNAME.ilike("%" + name + "%"),
+                                MemberView.LNAME.ilike("%" + name + "%")),
+                            MemberView.MEMNO.ilike("%" + args_dict["ID"] + "%"),
+                            MemberView.PSTATUS != "Terminated")
+                    except Exception as e:
+                        LOG.error(e)
+                        raise InternalServerError("Can't retrieve members", e)
 
                     if args_dict["email"] != "" and args_dict["email"] is not None:
                         members = members.filter(MemberView.EMAIL.ilike("%" + args_dict["email"] + "%"))
@@ -146,9 +166,6 @@ class Search(Resource):
                             'EM_STATUS': ""
                         })
                     return {"members": member_list}
-                except Exception as e:
-                    LOG.error(e)
-                    raise InternalServerError("Can't retrieve members", e)
         elif search_role == roles.ROLES_EMPLOYER:
             try:
                 employers = EmployerView.query \
