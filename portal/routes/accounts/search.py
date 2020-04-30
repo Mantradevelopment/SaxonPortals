@@ -123,13 +123,11 @@ class Search(Resource):
                     raise InternalServerError("Can't retrieve members", e)
             if employer_username == "" or employer_username is None:
                 try:
-                    members = db.session.query(HistoryView, MemberView).filter(
-                        HistoryView.MKEY == MemberView.MKEY,
+                    members = MemberView.query.filter(
                         or_(MemberView.FNAME.ilike("%" + args_dict["name"] + "%"),
                             MemberView.LNAME.ilike("%" + args_dict["name"] + "%")),
                         MemberView.MEMNO.ilike("%" + args_dict["ID"] + "%"),
-                        HistoryView.EMP_STATUS != "Terminated",
-                        MemberView.PSTATUS.ilike("%active%"))
+                        MemberView.PSTATUS != "Terminated")
 
                     if args_dict["email"] != "" and args_dict["email"] is not None:
                         members = members.filter(MemberView.EMAIL.ilike("%" + args_dict["email"] + "%"))
@@ -138,14 +136,14 @@ class Search(Resource):
                         return {"members": []}
                     member_list = []
                     members = members.order_by(MemberView.MEMNO.desc()).offset(offset_).limit(50).all()
-                    for his, mem in members:
+                    for mem in members:
                         member_list.append({
                             'MEMNO': mem.MEMNO,
                             'FNAME': mem.FNAME,
                             'LNAME': mem.LNAME,
                             'EMAIL': mem.EMAIL,
                             'PSTATUS': mem.PSTATUS,
-                            'EM_STATUS': his.EMP_STATUS
+                            'EM_STATUS': ""
                         })
                     return {"members": member_list}
                 except Exception as e:
