@@ -132,7 +132,7 @@ class Search(Resource):
                     try:
                         members = MemberView.query.filter(
                             and_(MemberView.FNAME.ilike("%" + firstname + "%"),
-                                MemberView.LNAME.ilike("%" + lastname + "%")),
+                                 MemberView.LNAME.ilike("%" + lastname + "%")),
                             MemberView.MEMNO.ilike("%" + args_dict["ID"] + "%"),
                             MemberView.PSTATUS != "Terminated")
                     except Exception as e:
@@ -149,23 +149,23 @@ class Search(Resource):
                         LOG.error(e)
                         raise InternalServerError("Can't retrieve members", e)
 
-                    if args_dict["email"] != "" and args_dict["email"] is not None:
-                        members = members.filter(MemberView.EMAIL.ilike("%" + args_dict["email"] + "%"))
+                if args_dict["email"] != "" and args_dict["email"] is not None:
+                    members = members.filter(MemberView.EMAIL.ilike("%" + args_dict["email"] + "%"))
 
-                    if members is None:
-                        return {"members": []}
-                    member_list = []
-                    members = members.order_by(MemberView.MEMNO.desc()).offset(offset_).limit(50).all()
-                    for mem in members:
-                        member_list.append({
-                            'MEMNO': mem.MEMNO,
-                            'FNAME': mem.FNAME,
-                            'LNAME': mem.LNAME,
-                            'EMAIL': mem.EMAIL,
-                            'PSTATUS': mem.PSTATUS,
-                            'EM_STATUS': ""
-                        })
-                    return {"members": member_list}
+                if members is None:
+                    return {"members": []}
+                member_list = []
+                members = members.order_by(MemberView.MEMNO.desc()).offset(offset_).limit(50).all()
+                for mem in members:
+                    member_list.append({
+                        'MEMNO': mem.MEMNO,
+                        'FNAME': mem.FNAME,
+                        'LNAME': mem.LNAME,
+                        'EMAIL': mem.EMAIL,
+                        'PSTATUS': mem.PSTATUS,
+                        'EM_STATUS': ""
+                    })
+                return {"members": member_list}
         elif search_role == roles.ROLES_EMPLOYER:
             try:
                 employers = EmployerView.query \
