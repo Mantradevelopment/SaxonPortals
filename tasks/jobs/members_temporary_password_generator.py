@@ -13,7 +13,6 @@ from tasks.jobs.send_email import send_email
 from tasks.worker import app, flask_app
 
 
-
 STATE_FILE_PATH = os.path.join(flask_app.config['DATA_DIR'], '.members_temporary_password_generator.state')
 DISABLE_SENDING_EMAIL_TEMPORARILY = False
 
@@ -31,7 +30,8 @@ def members_temporary_password_generator():
 
 def _send_to_members(offset, limit):
     # query should be without semicolon
-    members = MemberView.query.with_entities(MemberView.MKEY).offset(offset).limit(limit).all()
+
+    members = MemberView.query.with_entities(MemberView.MKEY).filter(MemberView.PSTATUS != "Terminated").order_by(MemberView.MEMNO.desc()).offset(offset).limit(limit).all()
     LOG.info('job:members-tmp-pass-gen:members:Fetched %s from MemberView', len(members))
     _member_counter = 0
 
