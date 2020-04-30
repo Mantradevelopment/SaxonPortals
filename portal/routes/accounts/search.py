@@ -89,15 +89,32 @@ class Search(Resource):
                     return {"members": []}
                 employer_sname = employer_.SNAME
                 try:
-                    members = db.session.query(HistoryView, EmployerView, MemberView).filter(
-                        HistoryView.ERKEY == EmployerView.ERKEY,
-                        HistoryView.MKEY == MemberView.MKEY,
-                        EmployerView.ERKEY == employer_.ERKEY,
-                        or_(MemberView.FNAME.ilike("%" + args_dict["name"] + "%"),
-                            MemberView.LNAME.ilike("%" + args_dict["name"] + "%")),
-                        MemberView.MEMNO.ilike("%" + args_dict["ID"] + "%"),
-                        HistoryView.EMP_STATUS != "Terminated",
-                        MemberView.PSTATUS.ilike("%active%"))
+                    name = args_dict["name"]
+                    if " " in name:
+                        firstname, lastname = name.split(" ")
+                        if lastname is None or lastname == "":
+                            lastname = firstname
+                        if firstname is None or firstname == "":
+                            firstname = lastname
+                        members = db.session.query(HistoryView, EmployerView, MemberView).filter(
+                            HistoryView.ERKEY == EmployerView.ERKEY,
+                            HistoryView.MKEY == MemberView.MKEY,
+                            EmployerView.ERKEY == employer_.ERKEY,
+                            and_(MemberView.FNAME.ilike("%" + firstname + "%"),
+                                 MemberView.LNAME.ilike("%" + lastname + "%")),
+                            MemberView.MEMNO.ilike("%" + args_dict["ID"] + "%"),
+                            HistoryView.EMP_STATUS != "Terminated",
+                            MemberView.PSTATUS.ilike("%active%"))
+                    else:
+                        members = db.session.query(HistoryView, EmployerView, MemberView).filter(
+                            HistoryView.ERKEY == EmployerView.ERKEY,
+                            HistoryView.MKEY == MemberView.MKEY,
+                            EmployerView.ERKEY == employer_.ERKEY,
+                            or_(MemberView.FNAME.ilike("%" + name + "%"),
+                                MemberView.LNAME.ilike("%" + name + "%")),
+                            MemberView.MEMNO.ilike("%" + args_dict["ID"] + "%"),
+                            HistoryView.EMP_STATUS != "Terminated",
+                            MemberView.PSTATUS.ilike("%active%"))
 
                     if args_dict["email"] != "" and args_dict["email"] is not None:
                         members = members.filter(MemberView.EMAIL.ilike("%" + args_dict["email"] + "%"))
