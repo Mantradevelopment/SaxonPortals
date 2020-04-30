@@ -12,7 +12,7 @@ from tasks.worker import app
 def create_employer_accounts():
     LOG.info("job:create_employer_accounts:started")
     employers = EmployerView.query.all()
-    LOG.debug("job:create_employer_accounts: %s employers fetched", len(employers))
+    LOG.info("job:create_employer_accounts: %s employers fetched", len(employers))
 
     for employer in employers:
         try:

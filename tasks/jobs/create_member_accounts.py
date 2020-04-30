@@ -18,7 +18,7 @@ def create_member_accounts():
         try:
             LOG.debug("job:create_member_accounts:Going to fetch %s members from offset %s", count, offset_)
             members = MemberView.query.offset(offset_).limit(100).all()
-            LOG.debug("%s members fetched successfully from offset %s", len(members), offset_)
+            LOG.info("job:create_member_accounts:%s members fetched successfully from offset %s", len(members), offset_)
             for member in members:
                 try:
                     _upsert_member(member)
@@ -27,10 +27,10 @@ def create_member_accounts():
                     LOG.warning("job:create_member_accounts:There was an unexpected error while upserting a member: %s", e)
 
         except Exception as e:
-            LOG.warning("There was an unexpected error while processing MembersView items. %s", e)
+            LOG.warning("job:create_member_accounts:There was an unexpected error while processing MembersView items. %s", e)
         finally:
             offset_ += 99
-    LOG.info("job:create_member_accounts:done (offset_: %s)", offset_)
+    LOG.info("job:create_member_accounts:done:offset_: %s", offset_)
 
 
 def _upsert_member(member):
