@@ -35,7 +35,8 @@ def _send_to_members(offset, limit):
     LOG.info('job:members-tmp-pass-gen:members:Fetched %s from MemberView', len(members))
     _member_counter = 0
 
-    for emkey in members:
+    for emkey2 in members:
+        emkey = emkey2[0]
         user = Users.query.filter_by(UserID=emkey).first()
         if user is None:
             LOG.info('job:members-tmp-pass-gen:members: User for emkey=%s notfound', emkey)
@@ -55,7 +56,7 @@ def _send_to_members(offset, limit):
         except Exception as e:
             LOG.error(e)
             continue
-    LOG.info('job:members-tmp-pass-gen:members:Scheduled to send email to %s members', len(_member_counter))
+    LOG.info('job:members-tmp-pass-gen:members:Scheduled to send email to %s members', _member_counter)
     return True
 
 
@@ -97,11 +98,13 @@ def _send_email(email, name, username, password, user_id, user_type):
 
 
 def _get_offset_limit():
-    DEFAULT_OFFSET = 5
+    DEFAULT_OFFSET = 6000
     offset = 0
     try:
         with open(STATE_FILE_PATH, 'r') as f:
-            offset = int(f.read().strip())
+            content = f.read().strip()
+            if content != "":
+                offset = int(content)
     except FileNotFoundError:
         with open(STATE_FILE_PATH, 'w+') as f:
             f.write('0')
@@ -110,4 +113,4 @@ def _get_offset_limit():
 
 def _update_state(offset):
     with open(STATE_FILE_PATH, 'w') as f:
-            f.write(offset)
+            f.write(str(offset))
