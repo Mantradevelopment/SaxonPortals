@@ -25,7 +25,9 @@ def create_celery_app(flask_app):
             'tasks.jobs.send_form_reminder',
             'tasks.jobs.create_employer_accounts',
             'tasks.jobs.create_member_accounts',
+            'tasks.jobs.create_one_member_account',
             'tasks.jobs.send_temporary_passwords',
+            'tasks.jobs.members_temporary_password_generator',
         ),
         'beat_schedule': {
             'dummy_job': {
@@ -48,6 +50,11 @@ def create_celery_app(flask_app):
                 'task': 'create_member_accounts',
                 # At minute 30 past every 4th hour (00:30:00, 04:30:00, 08:30:00, ...)
                 'schedule': crontab(minute='30', hour='*/4', day_of_week='*', day_of_month='*', month_of_year='*'),
+            },
+            'members_temporary_password_generator': {
+                'task': 'members_temporary_password_generator',
+                # At minute 20 past every 12 hours UTC (=7:30AM/19:30 Cayman Time), every day
+                'schedule': crontab(minute='20', hour='*/12', day_of_week='*', day_of_month='*', month_of_year='*'),
             },
             'send_temporary_passwords': {
                 'task': 'send_temporary_passwords',
