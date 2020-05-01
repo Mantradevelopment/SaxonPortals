@@ -67,7 +67,6 @@ class GetMemberDetails(Resource):
 
         if beneficiary is not None:
             for ben in beneficiary:
-                LOG.info(ben.BEN_NAME)
                 benef_names += ben.BEN_NAME + ","
                 rel_names += ben.RELNAME + ","
             benef_names = benef_names[:-1]

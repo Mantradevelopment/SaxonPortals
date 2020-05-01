@@ -85,7 +85,7 @@ def _send_email(email, name, username, password, user_id, user_type):
         return False
 
     subject = "Silver Thatch Pensions Member Portal"
-    body = render_template(f'emails/members_temporary_password_generator/{user_type}.html',
+    body = render_template(f'emails/send_temporary_passwords/{user_type}.html',
             frontend_url=flask_app.config["FRONTEND_URL"],username=username,password=password)
 
     send_email.apply_async(args=[email, subject, body])
