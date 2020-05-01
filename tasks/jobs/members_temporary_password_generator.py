@@ -15,22 +15,22 @@ from tasks.worker import app, flask_app
 
 STATE_FILE_PATH = os.path.join(flask_app.config['DATA_DIR'], '.members_temporary_password_generator.state')
 DISABLE_SENDING_EMAIL_TEMPORARILY = False
+DEFAULT_LIMIT = 6000
 
 @app.task(name='members_temporary_password_generator')
-def members_temporary_password_generator():
-    offset, limit = _get_offset_limit()
+def members_temporary_password_generator(limit=DEFAULT_LIMIT):
+    offset = _get_offset()
     LOG.info("job:members-tmp-pass-gen:started:offset=%s,limit=%s", offset, limit)
     try:
         _send_to_members(offset, limit)
     finally:
-        _update_state(offset)
+        _update_state(offset+limit)
     LOG.info("job:members-tmp-pass-gen:done")
 
 
 
 def _send_to_members(offset, limit):
     # query should be without semicolon
-
     members = MemberView.query.with_entities(MemberView.MKEY).filter(MemberView.PSTATUS != "Terminated").order_by(MemberView.MEMNO.desc()).offset(offset).limit(limit).all()
     LOG.info('job:members-tmp-pass-gen:members:Fetched %s from MemberView', len(members))
     _member_counter = 0
@@ -64,12 +64,13 @@ def _send_to_members(offset, limit):
 def _track_email(email, user_id):
     t = EmailTrack(
         Email=email,
-        UserID=user_id,
+        UserID=str(user_id),
         EmailType='temporary_password',
         CreatedDate=datetime.utcnow(),
     )
     db.session.add(t)
     db.session.commit()
+    LOG.info('job:members-tmp-pass-gen:members:scheduled email for %s', user_id)
     return
 
 
@@ -97,8 +98,7 @@ def _send_email(email, name, username, password, user_id, user_type):
 
 
 
-def _get_offset_limit():
-    DEFAULT_OFFSET = 6000
+def _get_offset():
     offset = 0
     try:
         with open(STATE_FILE_PATH, 'r') as f:
@@ -108,9 +108,10 @@ def _get_offset_limit():
     except FileNotFoundError:
         with open(STATE_FILE_PATH, 'w+') as f:
             f.write('0')
-    return offset, DEFAULT_OFFSET
+    return offset
 
 
 def _update_state(offset):
     with open(STATE_FILE_PATH, 'w') as f:
-            f.write(str(offset))
+        LOG.info('job:members-tmp-pass-gen:members:Updating state file(%s) with new offset:%s', STATE_FILE_PATH, offset)
+        f.write(str(offset))
