@@ -56,7 +56,7 @@ def _send_to_members(offset, limit):
         except Exception as e:
             LOG.error(e)
             continue
-    LOG.info('job:members-tmp-pass-gen:members:Scheduled to send email to %s members', _member_counter)
+    LOG.info('job:members-tmp-pass-gen:members:%s users got checked.', _member_counter)
     return True
 
 

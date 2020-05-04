@@ -23,13 +23,13 @@ class Index(Resource):
 class MyIP(Resource):
     def get(self):
         x_real_ip = request.headers['X-Real-Ip'] if 'X-Real-Ip' in request.headers else None
-        LOG.info('X-Real-Ip: %s', x_real_ip)
+        LOG.debug('X-Real-Ip: %s', x_real_ip)
 
         x_forwarded_ip = request.headers['X-Forwarded-For'] if 'X-Forwarded-For' in request.headers else None
-        LOG.info('X-Forwarded-For: %s', x_forwarded_ip)
+        LOG.debug('X-Forwarded-For: %s', x_forwarded_ip)
 
         flask_remote_addr = request.environ['REMOTE_ADDR'] if 'REMOTE_ADDR' in request.environ else ''
-        LOG.info('REMOTE_ADDR: %s', flask_remote_addr)
+        LOG.debug('REMOTE_ADDR: %s', flask_remote_addr)
 
         user_ip = x_real_ip if x_real_ip else x_forwarded_ip if x_forwarded_ip else flask_remote_addr
         return { 'ip': user_ip }

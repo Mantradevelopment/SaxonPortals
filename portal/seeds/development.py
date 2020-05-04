@@ -74,74 +74,9 @@ class DevelopmentSeeder(object):
                           Email="mwright@saxon.ky"
                           )
 
-        member1 = Users(UserID="328847",
-                        Username="328847",
-                        Password="6Q9usKHCRmlaNgufji0mJg==",
-                        Status=STATUS_ACTIVE,
-                        TemporaryPassword=False,
-                        Role=ROLES_MEMBER,
-                        SecurityQuestionID=1,
-                        DisplayName="Lawrence Smith",
-                        Email="mwright@saxon.ky"
-                        )
-        member2 = Users(UserID="389546",
-                        Username="389546",
-                        Password="6Q9usKHCRmlaNgufji0mJg==",
-                        Status=STATUS_ACTIVE,
-                        TemporaryPassword=True,
-                        Role=ROLES_MEMBER,
-                        SecurityQuestionID=1,
-                        DisplayName="Paul Manning",
-                        )
-
-        member3 = Users(UserID="360589",
-                        Username="360589",
-                        Password="6Q9usKHCRmlaNgufji0mJg==",
-                        Status=STATUS_ACTIVE,
-                        TemporaryPassword=True,
-                        Role=ROLES_MEMBER,
-                        SecurityQuestionID=1,
-                        DisplayName="Mellisa Morgan",
-                        )
-        member4 = Users(UserID="384261",
-                        Username="384261",
-                        Password="6Q9usKHCRmlaNgufji0mJg==",
-                        Status=STATUS_ACTIVE,
-                        TemporaryPassword=False,
-                        Role=ROLES_MEMBER,
-                        SecurityQuestionID=1,
-                        DisplayName="Tracey Crowston",
-                        )
-        member5 = Users(UserID="316718",
-                        Username="316718",
-                        Password="6Q9usKHCRmlaNgufji0mJg==",
-                        Status=STATUS_ACTIVE,
-                        TemporaryPassword=False,
-                        Role=ROLES_MEMBER,
-                        SecurityQuestionID=1,
-                        DisplayName="Ma Kristina Jacaban",
-                        )
-        member6 = Users(UserID="295643",
-                        Username="28634",
-                        Password="6Q9usKHCRmlaNgufji0mJg==",
-                        Status=STATUS_ACTIVE,
-                        TemporaryPassword=False,
-                        Role=ROLES_MEMBER,
-                        SecurityQuestionID=1,
-                        DisplayName="Alice Ramos Test",
-                        )
-
         self.db.session.merge(admin_user)
         self.db.session.merge(employer_user)
         self.db.session.merge(reviewmanager_user)
-        # self.db.session.merge(employer1)
-        # self.db.session.merge(employer2)
-        self.db.session.merge(member1)
-        self.db.session.merge(member2)
-        self.db.session.merge(member3)
-        self.db.session.merge(member4)
-        self.db.session.merge(member5)
-        self.db.session.merge(member6)
 
     def _add_employers(self):
         employer1 = Employer(
