@@ -31,7 +31,7 @@ def create_member_accounts(limit=DEFAULT_LIMIT):
         except Exception as e:
             LOG.warning("job:create_member_accounts:There was an unexpected error while processing MembersView items. %s", e)
         finally:
-            offset_ += 99
+            offset_ += (limit -  1)
     LOG.info("job:create_member_accounts:done:offset_: %s", offset_)
 
 
