@@ -8,16 +8,18 @@ from portal.models.status import *
 from tasks.worker import app
 
 
+DEFAULT_LIMIT = 5000
+
 @app.task(name='create_member_accounts')
-def create_member_accounts():
+def create_member_accounts(limit=DEFAULT_LIMIT):
     LOG.info("job:create_member_accounts:started")
     offset_ = 0
     count = MemberView.query.count()
-    count = int(count / 100) + 1
+    count = int(count / limit) + 1
     for i in range(count):
         try:
             LOG.debug("job:create_member_accounts:Going to fetch %s members from offset %s", count, offset_)
-            members = MemberView.query.offset(offset_).limit(100).all()
+            members = MemberView.query.offset(offset_).limit(limit).all()
             LOG.info("job:create_member_accounts:%s members fetched successfully from offset %s", len(members), offset_)
             for member in members:
                 try:
