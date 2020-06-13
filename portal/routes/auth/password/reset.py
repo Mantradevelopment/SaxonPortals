@@ -32,7 +32,7 @@ def _change_password(username, email, display_name):
         message = f'<p>Dear {display_name}</p>' + \
                   f'<p>Username is {username}</p>' + \
                   f'<p>Your password has been reset.</p>' + \
-                  f'<p>The temporary password is: <b>{password}</b></p>'
+                  f'<p>The temporary password is: <b style="color:red">{password}</b></p>'
 
         user = Users.query.filter_by(Username=username).first()
         user.Password = pass_encrypt

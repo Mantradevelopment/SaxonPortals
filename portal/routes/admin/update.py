@@ -79,7 +79,7 @@ class UpdateUser(Resource):
                         user.PhoneNumber = phone_number
                         user.Password = password_enc
                         user.TemporaryPassword = True
-                        msgtext = f'<p>Your password has been reset. The temporary password is: {password}</p>' + \
+                        msgtext = f'<p>Your password has been reset. The temporary password is: <b style="color:red">{password}</b></p>' + \
                                   '<p>Please log into your system as soon as possible to set your new password.</p>'
 
                         subject = "Temporary Password for Saxon Portals"
@@ -115,7 +115,7 @@ class UpdateUser(Resource):
                     user.Email = email
                     user.Password = password_enc
                     user.TemporaryPassword = True
-                    msgtext = f'<p>Your password has been reset. The temporary password is: {password}</p>' + \
+                    msgtext = f'<p>Your password has been reset. The temporary password is: <b style="color:red">{password}</b></p>' + \
                               f'<p>Please log into your system as soon as possible to set your new password.</p>'
 
                     subject = "Temporary Password for Saxon Portals"
