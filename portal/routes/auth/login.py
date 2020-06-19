@@ -47,7 +47,7 @@ class Login(Resource):
         userinfo = Users.query.filter_by(Username=username, Password=encrypt_password).first()
         if userinfo is None:
             LOG.debug("Auth failed. Username (%s) or Password is wrong", username)
-            raise UnprocessableEntity('Username or Password is incorrect')
+            raise UnprocessableEntity('Username or Password is incorrect. After 5 unsuccessful attempts , your account will be locked')
 
         if (userinfo.Status == status.STATUS_DELETE) or \
                 (userinfo.Role in [roles.ROLES_REVIEW_MANAGER, roles.ROLES_ADMIN] and str(userinfo.Status).upper()
