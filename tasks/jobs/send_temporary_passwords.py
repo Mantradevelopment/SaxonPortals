@@ -20,9 +20,9 @@ def send_temporary_passwords():
     LOG.info("job:send_temporary_passwords:employers:started")
     _send_to_employers()
     LOG.info("job:send_temporary_passwords:employers:done")
-    # LOG.info("job:send_temporary_passwords:members:started")
-    # _send_to_members()
-    # LOG.info("job:send_temporary_passwords:members:done")
+    LOG.info("job:send_temporary_passwords:members:started")
+    _send_to_members()
+    LOG.info("job:send_temporary_passwords:members:done")
     LOG.info("job:send_temporary_passwords:done")
 
 
