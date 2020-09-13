@@ -112,6 +112,10 @@ def _get_offset():
 
 
 def _update_state(offset):
+    count = MemberView.query.count()
+    if offset > count:
+        LOG.info('job:members-tmp-pass-gen:members: members count(%s) is less than new offset:%s : Updating offset to count', count, offset)
+        offset = count
     with open(STATE_FILE_PATH, 'w') as f:
         LOG.info('job:members-tmp-pass-gen:members:Updating state file(%s) with new offset:%s', STATE_FILE_PATH, offset)
         f.write(str(offset))
