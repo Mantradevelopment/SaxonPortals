@@ -54,13 +54,12 @@ def create_celery_app(flask_app):
             'members_temporary_password_generator': {
                 'task': 'members_temporary_password_generator',
                 # At minute 20 past every 12 hours UTC (=7:30AM/19:30 Cayman Time), every day
-                # temporarily setting this to */2 instead of  */12 for debugging
-                'schedule': crontab(minute='20', hour='*/2', day_of_week='*', day_of_month='*', month_of_year='*'),
+                'schedule': crontab(minute='20', hour='*/12', day_of_week='*', day_of_month='*', month_of_year='*'),
             },
             'send_temporary_passwords': {
                 'task': 'send_temporary_passwords',
-                # At minute 30 past 8AM UTC (=3:30AM Cayman Time), every day  (00:59:00, 04:59:00, 08:59:00, ...)
-                'schedule': crontab(minute='30', hour='8', day_of_week='*', day_of_month='*', month_of_year='*'),
+                # At minute 30 past 9AM UTC (=4:30AM Cayman Time), every day  (00:59:00, 04:59:00, 08:59:00, ...)
+                'schedule': crontab(minute='30', hour='9', day_of_week='*', day_of_month='*', month_of_year='*'),
             },
         },
     })

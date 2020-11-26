@@ -120,7 +120,8 @@ class SearchForms(Resource):
             if parameters_dict["FormType"] == TOKEN_FORMTYPE_ENROLLMENT or parameters_dict["FormType"] == "":
                 name = parameters_dict["Member"]
                 if " " in name:
-                    firstname, lastname = name.split(" ")
+                    namesplit = name.split(" ")
+                    firstname, lastname = namesplit[0], namesplit[1]
                     print("firstname if", firstname, "--End")
                     print("lastname if", lastname, "--End")
                     if (lastname is None or lastname == ""):
