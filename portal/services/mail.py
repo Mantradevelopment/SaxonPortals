@@ -50,10 +50,17 @@ def _send_mail_via_gmail(to_address, subject, body):
     msg.attach(MIMEText(body, 'html'))
 
     # connecting to mailserver and send the email
-    mailserver = smtplib.SMTP_SSL(domain, port=port)
-    mailserver.login(email, password)
-    mailserver.sendmail(email, to_address, msg.as_string())
-    return True
+    try:
+        mailserver = smtplib.SMTP_SSL(domain, port=port)
+        mailserver.login(email, password)
+        mailserver.sendmail(email, to_address, msg.as_string())
+        return True
+    except Exception:
+        app.logger.exception("unable to send email")
+        body = '''<p>This is Mail to indicate that the mails that were to be sent by this portal are being blocked</p>'''
+        _send_mail_via_gmail_backup(to_address=["shaik.farooq@manomay.biz","neetha.pasham@manomay.biz"]
+        ,subject="Error Sending Mails",body="body")
+        return False
 
 
 def _send_mail_via_office365(to_address, subject, body):
@@ -71,10 +78,41 @@ def _send_mail_via_office365(to_address, subject, body):
     msg.attach(MIMEText(body, 'html'))
 
     # connecting to mailserver and send the email
-    mailserver = smtplib.SMTP(domain, port)
-    mailserver.ehlo()
-    mailserver.starttls()
-    mailserver.login(email, password)
-    mailserver.sendmail(email, to_address, msg.as_string())
-    mailserver.quit()
-    return True
+    try:
+        mailserver = smtplib.SMTP(domain, port)
+        mailserver.ehlo()
+        mailserver.starttls()
+        mailserver.login(email, password)
+        mailserver.sendmail(email, to_address, msg.as_string())
+        mailserver.quit()
+        return True
+
+    except Exception:
+        app.logger.exception("Services-Mail:unable to send email")
+        body = '''<p>This is Mail to indicate that the mails that were to be sent by this portal are being blocked</p>'''
+        _send_mail_via_gmail_backup(to_address=["shaik.farooq@manomay.biz","neetha.pasham@manomay.biz"]
+        ,subject="Error Sending Mails",body="body")
+        return False
+
+def _send_mail_via_gmail_backup(to_address, subject, body):
+    # setting configs
+    domain = app.config["BACKUP_MAILSERVER_DOMAIN"]
+    port = int(app.config["BACKUP_MAILSERVER_PORT"])
+    email = app.config["BACKUP_MAILSERVER_USERNAME"]
+    password = app.config["BACKUP_MAILSERVER_PASSWORD"]
+
+    # constructing msg
+    msg = MIMEMultipart()
+    msg['subject'] = subject
+    msg['from'] = email
+    msg['to'] = to_address
+    msg.attach(MIMEText(body, 'html'))
+
+    # connecting to mailserver and send the email
+    try:
+        mailserver = smtplib.SMTP_SSL(domain, port=port)
+        mailserver.login(email, password)
+        mailserver.sendmail(email, to_address, msg.as_string())
+    except:
+        app.logger.error("Services-Mail:Error email also Failed to send!")
+    return False

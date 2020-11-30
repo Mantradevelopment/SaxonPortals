@@ -79,20 +79,23 @@ def _send_email(email, name, username, password, user_id, user_type):
     if DISABLE_SENDING_EMAIL_TEMPORARILY:
         return True
 
-    if isProd() != True:
-        return False
+    # if isProd() != True:
+    #     return False
 
     if email is None:
         return False
 
-    subject = "Silver Thatch Pensions Member Portal"
+    # subject = "Silver Thatch Pensions Member Portal"
+    subject = "Silver Thatch Pensions Member Portal - Testing"
     body = render_template(f'emails/send_temporary_passwords/{user_type}.html',
             frontend_url=flask_app.config["FRONTEND_URL"],username=username,password=password)
 
-    send_email.apply_async(args=[email, subject, body])
-
-    _track_email(email, user_id)
-
+    sent = send_email(to_address=email,subject=subject,body=body)
+    if sent:
+        # _track_email(email, user_id)
+        pass
+    else:
+        LOG.error('job:members-tmp-pass-gen:Unable to send email')
     return True
 
 

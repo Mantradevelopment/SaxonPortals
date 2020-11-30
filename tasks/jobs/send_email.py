@@ -6,5 +6,5 @@ from tasks.worker import app
 @app.task(name='send_email')
 def send_email(to_address, subject, body):
     LOG.info('job:send_email:started')
-    send_email_sync(to_address, subject, body)
+    return send_email_sync(to_address, subject, body)
     LOG.info('job:send_email:done')
