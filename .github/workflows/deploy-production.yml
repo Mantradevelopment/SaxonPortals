@@ -5,12 +5,7 @@ on:
     branches:
       - master
     paths:
-      - 'app.py'
-      - 'conftest.py'
-      - 'requirements.txt'
-      - 'portal/**'
-      - 'tasks/**'
-      - 'config/**'
+      - 'ops/playbook/inventory/.trigger-deploy-production'
 
 
 jobs:
@@ -40,25 +35,9 @@ jobs:
           pip install pytest-flask
           BACKEND_ENV=test py.test -v
 
-  deploy-to-staging:
-    runs-on: ubuntu-latest
-    needs: [verify]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Deploying application
-        uses: saubermacherag/ansible-playbook-docker-action@v1.3
-        with:
-          playbookName: ./ops/playbook/deploy.yaml
-          inventoryFile: ./ops/playbook/inventory/staging
-          keyFile: ./ops/ssh/prod_deploy_private_key
-          keyFileVaultPass: ${{ secrets.ANSIBLE_VAULT_SECRET }}
-          extraVars: "-e git_version=${{ github.sha }} -e git_actor=${{ github.actor }}"
-          extraFile: ./ops/playbook/vars/staging.yaml
-          verbosity: "vv"
-
   deploy-to-production:
     runs-on: ubuntu-latest
-    needs: [verify, deploy-to-staging]
+    needs: [verify]
     steps:
       - uses: actions/checkout@v2
       - name: Deploying application
