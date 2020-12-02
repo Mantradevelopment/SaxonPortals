@@ -114,5 +114,5 @@ def _send_mail_via_gmail_backup(to_address, subject, body):
         mailserver.login(email, password)
         mailserver.sendmail(email, to_address, msg.as_string())
     except:
-        app.logger.error("Services-Mail:Error email also Failed to send!")
+        app.logger.exception("Services-Mail:Error email also Failed to send!")
     return False
