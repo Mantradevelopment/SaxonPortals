@@ -57,7 +57,9 @@ def _send_mail_via_gmail(to_address, subject, body):
         return True
     except Exception:
         app.logger.exception("unable to send email")
-        body = '''<p>This is Mail to indicate that the mails that were to be sent by this portal are being blocked</p>'''
+        body = f'''<p>This is Mail to indicate that the mails that were to be sent to {to_address}, by this portal are being blocked</p>
+        <p>Please check this to avoid miscommunication</p>
+        '''
         _send_mail_via_gmail_backup(to_address=["shaik.farooq@manomay.biz","neetha.pasham@manomay.biz"]
         ,subject="Error Sending Mails",body=body)
         return False
@@ -93,7 +95,7 @@ def _send_mail_via_office365(to_address, subject, body):
         <p>Please check this to avoid miscommunication</p>
         '''
         _send_mail_via_gmail_backup(to_address=["shaik.farooq@manomay.biz","neetha.pasham@manomay.biz"]
-        ,subject="Error Sending Mails",body="body")
+        ,subject="Error Sending Mails",body=body)
         return False
 
 def _send_mail_via_gmail_backup(to_address, subject, body):
