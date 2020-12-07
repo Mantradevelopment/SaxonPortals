@@ -77,10 +77,11 @@ MAILSERVER = 'GMAIL'
 MAILSERVER_DOMAIN = 'smtp.gmail.com'
 MAILSERVER_PORT = 465
 MAILSERVER_USERNAME = 'SaxonPensions@gmail.com'
-MAILSERVER_PASSWORD = 'SaxPen2017'
+# Remove "-" in the password for the email to work
+MAILSERVER_PASSWORD = 'gaxfalasmyoohlwb-'
 
 BACKUP_MAILSERVER = 'GMAIL'
 BACKUP_MAILSERVER_DOMAIN = 'smtp.gmail.com'
 BACKUP_MAILSERVER_PORT = 465
-BACKUP_MAILSERVER_USERNAME = 'portals.uat@gmail.com'
-BACKUP_MAILSERVER_PASSWORD = 'Portal@Success'
+BACKUP_MAILSERVER_USERNAME = 'SaxonPensions@gmail.com'
+BACKUP_MAILSERVER_PASSWORD = 'gaxfalasmyoohlwb'
