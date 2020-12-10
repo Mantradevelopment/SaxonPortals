@@ -9,7 +9,6 @@ from ...models.terminationform import Terminationform
 from ...models.token import Token, TOKEN_FORMTYPE_TERMINATION
 from ...models.comments import Comments
 from ...models.roles import *
-from ...services.mail import send_email
 from . import ns
 from ... import APP, LOG
 

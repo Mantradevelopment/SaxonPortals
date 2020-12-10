@@ -521,9 +521,9 @@ class EnrollmentController(Resource):
                f'<p>Dear {name} </p>' + \
                f'<p>Your Enrollment has been processed</p>' \
                f'<p>Please find your Member Number : {args["NewMemberID"]}</p>'
-        status = send_email(to_address=form.EmailAddress, subject=subject,
-                   body=body)
-        if status is not True:
+        mail_status = send_email(to_address=form.EmailAddress, subject=subject,body=body)
+        if mail_status is not True:
+            LOG.error(mail_status)
             return UnprocessableEntity('Email Trigger failed')
 
     def _reject_pre_update(self, token, form, args):
@@ -572,8 +572,9 @@ class EnrollmentController(Resource):
                f'<p>To learn more about the Silver Thatch Pension ' + \
                f'Plan, click <a href="{APP.config["MAIL_ENROLLMENT_URL"]}">here</a>' \
                f' to review our members handbook. </p>'
-        status = send_email(to_address=form.EmailAddress, subject=subject, body=body)
-        if status is not True:
+        mail_status = send_email(to_address=form.EmailAddress, subject=subject, body=body)
+        if mail_status is not True:
+            LOG.error(mail_status)
             return UnprocessableEntity('Email Trigger failed')
 
     @ns.doc(description='Delete enrollment file',

@@ -100,8 +100,9 @@ class UpdateUser(Resource):
 
                 db.session.commit()
                 if msgtext is not None and subject is not None:
-                    status = send_email(user.Email, subject=subject, body=msgtext)
-                    if status is not True:
+                    mail_status = send_email(user.Email, subject=subject, body=msgtext)
+                    if mail_status is not True:
+                        LOG.error(mail_status)
                         return UnprocessableEntity('Email Trigger failed')
                 return RESPONSE_OK
             elif role == roles.ROLES_EMPLOYER or role == roles.ROLES_MEMBER or role == roles.ROLES_HR:

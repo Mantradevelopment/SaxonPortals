@@ -10,7 +10,6 @@ from ...models.emp_mem_relation import EmpMemRelation
 from ...models.employer_member_relation import EmpMemRel
 from ...models.employer import Employer
 from ...models.member import Member
-from ...services.mail import send_email
 from ...models.security_question import SecurityQuestion
 from werkzeug.exceptions import UnprocessableEntity, Unauthorized, InternalServerError
 from . import ns

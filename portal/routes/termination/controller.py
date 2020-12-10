@@ -192,7 +192,10 @@ class TerminationInitiationController(Resource):
                             'You will receive notification once your form has been processed</p>'
                         )
 
-                        send_email(to_address=args['EmailAddress'], subject=member_subject, body=member_msg_text)
+                        mail_status = send_email(to_address=args['EmailAddress'], subject=member_subject, body=member_msg_text)
+                        if mail_status is not True:
+                            LOG.error(mail_status)
+                            return UnprocessableEntity('Email Trigger failed')
                         return {"result": "Success"}, 200
                     except smtplib.SMTPException as e:
                         LOG.error("smtp exception at termination", str(e))
@@ -258,7 +261,10 @@ class TerminationInitiationController(Resource):
                                        f'<p>Dear {member_name}</p>' + \
                                        '<p>Your termination has been processed </p>'
 
-                            send_email(to_address=args['EmailAddress'], subject=subject, body=msg_text)
+                            mail_status = send_email(to_address=args['EmailAddress'], subject=subject, body=msg_text)
+                            if mail_status is not True:
+                                LOG.error(mail_status)
+                                return UnprocessableEntity('Email Trigger failed')
                             return {"result": "Success"}, 200
                         except smtplib.SMTPException as e:
                             LOG.error("smtp exception at termination", str(e))
@@ -301,7 +307,10 @@ class TerminationInitiationController(Resource):
                                        '<p>To learn more about the Silver Thatch Pension ' + \
                                        'Plan, click here to review our members handbook. </p>'
 
-                            send_email(to_address=args['EmailAddress'], subject=subject, body=msg_text)
+                            mail_status = send_email(to_address=args['EmailAddress'], subject=subject, body=msg_text)
+                            if mail_status is not True:
+                                LOG.error(mail_status)
+                                return UnprocessableEntity('Email Trigger failed')
                             return {"result": "Success"}, 200
                         except smtplib.SMTPException as e:
                             LOG.error("smtp exception at termination", str(e))
