@@ -44,7 +44,10 @@ def send_form_reminder():
                             f' click <a href="{APP.config["MAIL_ENROLLMENT_URL"]}">here</a>' \
                             f' to review our members handbook. </p>'
                 try:
-                    send_email(to_address=enrollments.EmailAddress, subject=subject, body=msg_text)
+                    status = send_email(to_address=enrollments.EmailAddress, subject=subject, body=msg_text)
+                    if status is not True:
+                        LOG.error(status)
+                        continue
                     enrollments.LastNotifiedDate = datetime.utcnow()
                     db.session.commit()
                 except Exception as e:
@@ -68,7 +71,10 @@ def send_form_reminder():
                             f' click <a href="{APP.config["MAIL_ENROLLMENT_URL"]}">here</a> ' \
                             f'to review our members handbook. </p>'
                 try:
-                    send_email(to_address=enrollments.EmailAddress, subject=subject, body=msg_text)
+                    status = send_email(to_address=enrollments.EmailAddress, subject=subject, body=msg_text)
+                    if status is not True:
+                        LOG.error(status)
+                        continue
                     enrollments.LastNotifiedDate = datetime.utcnow()
                     db.session.commit()
                 except Exception as e:
@@ -95,7 +101,10 @@ def send_form_reminder():
                             f'<p>-----------------------------------------</p>' \
                             f'<p>{APP.config["FRONTEND_URL"]}/terminationform/{tokens.TokenID}</p>'
                 try:
-                    send_email(to_address=termination.EmailAddress, subject=subject, body=msg_text)
+                    status = send_email(to_address=termination.EmailAddress, subject=subject, body=msg_text)
+                    if status is not True:
+                        LOG.error(status)
+                        continue
                     enrollments.LastNotifiedDate = datetime.utcnow()
                     db.session.commit()
                 except smtplib.SMTPException as e:
@@ -120,7 +129,10 @@ def send_form_reminder():
                             f'<p>-----------------------------------------</p>' \
                             f'<p>{APP.config["FRONTEND_URL"]}/terminationform/{tokens.TokenID}</p>'
                 try:
-                    send_email(to_address=termination.EmailAddress, subject=subject, body=msg_text)
+                    status = send_email(to_address=termination.EmailAddress, subject=subject, body=msg_text)
+                    if status is not True:
+                        LOG.error(status)
+                        continue 
                     enrollments.LastNotifiedDate = datetime.utcnow()
                     db.session.commit()
                 except smtplib.SMTPException as e:
@@ -161,7 +173,10 @@ def send_form_reminder():
                 try:
                     if employer.Email == "":
                         continue
-                    send_email(to_address=employer.Email, subject=subject, body=msg_text)
+                    status = send_email(to_address=employer.Email, subject=subject, body=msg_text)
+                    if status is not True:
+                        LOG.error(status)
+                        continue
                     enrollments.LastNotifiedDate = datetime.utcnow()
                     db.session.commit()
                 except smtplib.SMTPException as e:
@@ -194,7 +209,10 @@ def send_form_reminder():
                 try:
                     if employer.Email == "":
                         continue
-                    send_email(to_address=employer.Email, subject=subject, body=msg_text)
+                    status = send_email(to_address=employer.Email, subject=subject, body=msg_text)
+                    if status is not True:
+                        LOG.error(status)
+                        continue
                     enrollments.LastNotifiedDate = datetime.utcnow()
                     db.session.commit()
                 except smtplib.SMTPException as e:

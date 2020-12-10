@@ -28,6 +28,7 @@ def create_celery_app(flask_app):
             'tasks.jobs.create_one_member_account',
             'tasks.jobs.send_temporary_passwords',
             'tasks.jobs.members_temporary_password_generator',
+            'tasks.jobs.validate_email_trigger'
         ),
         'beat_schedule': {
             'dummy_job': {
@@ -60,6 +61,11 @@ def create_celery_app(flask_app):
                 'task': 'send_temporary_passwords',
                 # At minute 30 past 9AM UTC (=4:30AM Cayman Time), every day  (00:59:00, 04:59:00, 08:59:00, ...)
                 'schedule': crontab(minute='30', hour='9', day_of_week='*', day_of_month='*', month_of_year='*'),
+            },
+            'validate_email_trigger': {
+                'task': 'validate_email_trigger',
+                # At minute 0 every 12 hours UTC (=7:00AM/19:00 Cayman Time), every day
+                'schedule': crontab(minute='0', hour='*/12', day_of_week='*', day_of_month='*', month_of_year='*'),
             },
         },
     })

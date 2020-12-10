@@ -19,7 +19,6 @@ from ...models.roles import *
 from ...models import db, status
 from ...models.status import *
 from ...api import api
-from ...services.mail import send_email
 from . import ns
 from ... import APP, LOG
 

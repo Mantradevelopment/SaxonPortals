@@ -131,7 +131,9 @@ class FormController(Resource):
                       f'click <a href="{APP.config["MAIL_ENROLLMENT_URL"]}">here</a>' \
                       f'to review our members handbook. </p>'
             try:
-                send_email(to_address=email_id, subject=subject, body=msgtext)
+                status = send_email(to_address=email_id, subject=subject, body=msgtext)
+                if status is not True:
+                    return UnprocessableEntity('Email Trigger failed')
                 form.LastNotifiedDate = datetime.utcnow()
                 db.session.commit()
                 return RESPONSE_OK
@@ -160,7 +162,9 @@ class FormController(Resource):
                       f'<p>-----------------------------------------</p>' + \
                       f'<p>' + APP.config["FRONTEND_URL"] + '/terminationform/' + TokenID + '</p>'
             try:
-                send_email(to_address=email_id, subject=subject, body=msgtext)
+                status = send_email(to_address=email_id, subject=subject, body=msgtext)
+                if status is not True:
+                    return UnprocessableEntity('Email Trigger failed')
                 form.LastNotifiedDate = datetime.utcnow()
                 db.session.commit()
                 return RESPONSE_OK

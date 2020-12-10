@@ -131,7 +131,9 @@ class TerminationInitiationController(Resource):
                 f'to your pension. </p><p>{comments}</p><p>-----------------------------------------</p> ' + \
                 f'<p>{APP.config["FRONTEND_URL"]}/terminationform/{token_id}</p>'
 
-            send_email(to_address=form.EmailAddress, subject=subject, body=msg_text)
+            status = send_email(to_address=form.EmailAddress, subject=subject, body=msg_text)
+            if status is not True:
+                return UnprocessableEntity('Email Trigger failed')
             return RESPONSE_OK
         except Exception as e:
             LOG.warning('Unexpected error happened during initiating termination: %s', e)

@@ -12,7 +12,6 @@ from ...models.contributionform import Contributionform
 from ...models.documents import Documents
 from ...models.comments import Comments
 from ...models.roles import *
-from ...services.mail import send_email
 from . import ns
 from ... import APP
 

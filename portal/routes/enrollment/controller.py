@@ -384,7 +384,9 @@ class EnrollmentController(Resource):
                f'<p>Dear {name}</p>' + \
                f'<p>Your Enrollment was submitted on {datetime.utcnow().strftime("%m/%d/%Y")} ' + \
                f'You will receive notification once your form has been processed.</p>'
-        send_email(to_address=form.EmailAddress, subject=subject, body=body)
+        status = send_email(to_address=form.EmailAddress, subject=subject, body=body)
+        if status is not True:
+            return UnprocessableEntity('Email Trigger failed')
 
     def _saveFormData_pre_update(self, token, form, args):
 
@@ -518,8 +520,10 @@ class EnrollmentController(Resource):
                f'<p>Dear {name} </p>' + \
                f'<p>Your Enrollment has been processed</p>' \
                f'<p>Please find your Member Number : {args["NewMemberID"]}</p>'
-        send_email(to_address=form.EmailAddress, subject=subject,
+        status = send_email(to_address=form.EmailAddress, subject=subject,
                    body=body)
+        if status is not True:
+            return UnprocessableEntity('Email Trigger failed')
 
     def _reject_pre_update(self, token, form, args):
         if 'Authorization' not in args or 'Ipaddress' not in args or 'username' not in args:
@@ -567,7 +571,9 @@ class EnrollmentController(Resource):
                f'<p>To learn more about the Silver Thatch Pension ' + \
                f'Plan, click <a href="{APP.config["MAIL_ENROLLMENT_URL"]}">here</a>' \
                f' to review our members handbook. </p>'
-        send_email(to_address=form.EmailAddress, subject=subject, body=body)
+        status = send_email(to_address=form.EmailAddress, subject=subject, body=body)
+        if status is not True:
+            return UnprocessableEntity('Email Trigger failed')
 
     @ns.doc(description='Delete enrollment file',
             responses={

@@ -12,6 +12,7 @@ from ...models.users import Users
 from ...models.security_question import SecurityQuestion
 from . import ns
 from ... import APP, LOG
+from werkzeug.exceptions import UnprocessableEntity
 from ...services.mail import send_email
 
 parser = reqparse.RequestParser()
@@ -67,7 +68,9 @@ class UserNew(Resource):
                         msg_text = f'<p>Dear {displayname}</p>' + \
                                     f'<p>Your account is created please use this password {password} to log in</p>'
 
-                        send_email(to_address=email, body=msg_text, subject="Welcome to Pension Management portal")
+                        status = send_email(to_address=email, body=msg_text, subject="Welcome to Pension Management portal")
+                        if status is not True:
+                            return UnprocessableEntity('Email Trigger failed')
                         return jsonify({"result": "Success"}), 200
                     else:
                         return jsonify({"error": "Username already exists"}), 409

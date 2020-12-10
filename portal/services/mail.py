@@ -18,7 +18,6 @@ def send_email(to_address, subject, body=None):
 
     return _send_mail_via_mailgun(to_address, subject, body)
 
-
 def _send_mail_via_mailgun(to_address, subject, body):
     mailgun_domain = app.config['MAILGUN_DOMAIN']
     mailgun_api_key = app.config['MAILGUN_API_KEY']
@@ -33,7 +32,6 @@ def _send_mail_via_mailgun(to_address, subject, body):
             "html": body
         }
     )
-
 
 def _send_mail_via_gmail(to_address, subject, body):
     # setting configs
@@ -55,15 +53,9 @@ def _send_mail_via_gmail(to_address, subject, body):
         mailserver.login(email, password)
         mailserver.sendmail(email, to_address, msg.as_string())
         return True
-    except Exception:
-        app.logger.exception("unable to send email")
-        body = f'''<p>This is Mail to indicate that the mails that were to be sent to {to_address}, by this portal are being blocked</p>
-        <p>Please check this to avoid miscommunication</p>
-        '''
-        _send_mail_via_gmail_backup(to_address=["shaik.farooq@manomay.biz","neetha.pasham@manomay.biz"]
-        ,subject="Error Sending Mails",body=body)
-        return False
-
+    except Exception as e:
+        app.logger.exception("Services-Mail:unable to send email")
+        return str(e)
 
 def _send_mail_via_office365(to_address, subject, body):
     # setting configs
@@ -89,14 +81,9 @@ def _send_mail_via_office365(to_address, subject, body):
         mailserver.quit()
         return True
 
-    except Exception:
+    except Exception as e:
         app.logger.exception("Services-Mail:unable to send email")
-        body = f'''<p>This is Mail to indicate that the mails that were to be sent to {to_address}, by this portal are being blocked</p>
-        <p>Please check this to avoid miscommunication</p>
-        '''
-        _send_mail_via_gmail_backup(to_address=["shaik.farooq@manomay.biz","neetha.pasham@manomay.biz"]
-        ,subject="Error Sending Mails",body=body)
-        return False
+        return str(e)
 
 def _send_mail_via_gmail_backup(to_address, subject, body):
     # setting configs

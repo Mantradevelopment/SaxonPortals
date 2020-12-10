@@ -1,0 +1,34 @@
+from datetime import datetime
+from tasks.jobs.send_email import send_email
+from tasks.worker import app, flask_app
+from portal.helpers import isProd
+from portal import LOG
+from portal.services.mail import _send_mail_via_gmail_backup
+
+DISABLE_SENDING_EMAIL_TEMPORARILY = False
+
+@app.task(name='send_temporary_passwords')
+def send_temporary_passwords():
+    # Try sending email
+    today = str(datetime.now())
+    LOG.info("job:validate_email_trigger:started")
+    to_address = ','.join(['shaik.farooq@manomay.biz','shaik.farooq@manomay.biz'])
+    subject = "Email Trigger Check"
+    body = f'''<p>Emails trigger - Check O.K</p><p>{today}</p>'''
+    status = send_email(to_address, subject, body)
+    if status is True:
+        LOG.info("job:validate_email_trigger:Email triggers working Fine")
+    else:
+        # replace while moving to prod
+        # if isProd():
+        if True:
+            LOG.info("job:validate_email_trigger:Email Trigger")
+            to_address = ','.join(['shaik.farooq@manomay.biz','shaik.farooq@manomay.biz'])
+            subject = "Email Trigger Check- Failed"
+            body = f'''<p>Emails trigger - Check Failed</p>
+                        <p>{today}</p>
+                        <p>Causes of email</p>
+                        <p>{status}</p>
+                        '''
+            _send_mail_via_gmail_backup(to_address=to_address,body=body,subject=subject)
+            LOG.info("job:validate_email_trigger:Handled the error of triggering emails")

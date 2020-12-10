@@ -13,7 +13,6 @@ from ...models.comments import Comments
 from ...models.documents import Documents
 from ...models.status import *
 from ...models.roles import *
-from ...services.mail import send_email
 from . import ns
 from ... import APP
 

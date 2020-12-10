@@ -118,9 +118,9 @@ def _send_email(email, name, username, password, user_id, user_type):
             frontend_url=flask_app.config["FRONTEND_URL"],username=username,password=password)
 
     sent = send_email(to_address=email,subject=subject,body=body)
-    if sent:
+    if sent is True:
         _track_email(email, user_id)
     else:
-        LOG.error('job:members-tmp-pass-gen:Unable to send email')
+        LOG.error('job:members-tmp-pass-gen:Unable to send email,%s',status)
 
     return True
