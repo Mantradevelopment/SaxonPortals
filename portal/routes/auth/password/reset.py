@@ -39,8 +39,9 @@ def _change_password(username, email, display_name):
         user.TemporaryPassword = True
         db.session.commit()
 
-        status = send_email(to_address=email, subject='Reset Password', body=message)
-        if status is not True:
+        mail_status = send_email(to_address=email, subject='Reset Password', body=message)
+        if mail_status is not True:
+            LOG.error(mail_status)
             return UnprocessableEntity('Email Trigger failed')
         return RESPONSE_OK
 

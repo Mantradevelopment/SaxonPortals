@@ -75,8 +75,7 @@ def _track_email(email, user_id):
 
 
 
-def 
-(email, name, username, password, user_id, user_type):
+def _send_email(email, name, username, password, user_id, user_type):
     if DISABLE_SENDING_EMAIL_TEMPORARILY:
         return True
 

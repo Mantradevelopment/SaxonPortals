@@ -68,8 +68,9 @@ class UserNew(Resource):
                         msg_text = f'<p>Dear {displayname}</p>' + \
                                     f'<p>Your account is created please use this password {password} to log in</p>'
 
-                        status = send_email(to_address=email, body=msg_text, subject="Welcome to Pension Management portal")
-                        if status is not True:
+                        mail_status = send_email(to_address=email, body=msg_text, subject="Welcome to Pension Management portal")
+                        if mail_status is not True:
+                            LOG.error(mail_status)
                             return UnprocessableEntity('Email Trigger failed')
                         return jsonify({"result": "Success"}), 200
                     else:

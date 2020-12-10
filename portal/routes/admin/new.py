@@ -95,8 +95,9 @@ class AddUser(Resource):
                                f'<p> Please ensure that you are not copying any extra spaces</p>' \
                                f'<p>Please use below link to login</p>' \
                                f'<p>{APP.config["FRONTEND_URL"]}/login</p>'
-                    status = send_email(email, "Welcome to Pension Management portal", body=msg_text)
-                    if status is not True:
+                    mail_status = send_email(email, "Welcome to Pension Management portal", body=msg_text)
+                    if mail_status is not True:
+                        LOG.error(mail_status)
                         return UnprocessableEntity('Email Trigger failed')    
                     return {"result": "Success"}, 200
                 else:

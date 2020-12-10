@@ -31,4 +31,4 @@ def send_temporary_passwords():
                         <p>{status}</p>
                         '''
             _send_mail_via_gmail_backup(to_address=to_address,body=body,subject=subject)
-            LOG.info("job:validate_email_trigger:Handled the error of triggering emails")
+            LOG.info("job:validate_email_trigger:Handled the error of triggering emails,%s",status)

@@ -384,8 +384,9 @@ class EnrollmentController(Resource):
                f'<p>Dear {name}</p>' + \
                f'<p>Your Enrollment was submitted on {datetime.utcnow().strftime("%m/%d/%Y")} ' + \
                f'You will receive notification once your form has been processed.</p>'
-        status = send_email(to_address=form.EmailAddress, subject=subject, body=body)
-        if status is not True:
+        mail_status = send_email(to_address=form.EmailAddress, subject=subject, body=body)
+        if mail_status is not True:
+            LOG.error(mail_status)
             return UnprocessableEntity('Email Trigger failed')
 
     def _saveFormData_pre_update(self, token, form, args):

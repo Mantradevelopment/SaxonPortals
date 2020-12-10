@@ -111,8 +111,9 @@ class EnrollmentInitiationController(Resource):
                         click <a href="{APP.config["MAIL_ENROLLMENT_URL"]}">here</a>
                         to review our members handbook. </p>"""
 
-            status = send_email(to_address=args["MemberEmail"], subject=email_subject, body=email_body)
-            if status is not True:
+            mail_status = send_email(to_address=args["MemberEmail"], subject=email_subject, body=email_body)
+            if mail_status is not True:
+                LOG.error(mail_status)
                 return UnprocessableEntity('Email Trigger failed')
 
             return {

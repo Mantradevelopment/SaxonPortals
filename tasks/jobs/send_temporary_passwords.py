@@ -121,6 +121,6 @@ def _send_email(email, name, username, password, user_id, user_type):
     if sent is True:
         _track_email(email, user_id)
     else:
-        LOG.error('job:members-tmp-pass-gen:Unable to send email,%s',status)
+        LOG.error('job:members-tmp-pass-gen:Unable to send email,%s',sent)
 
     return True
