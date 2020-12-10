@@ -114,8 +114,7 @@ class EnrollmentInitiationController(Resource):
             mail_status = send_email(to_address=args["MemberEmail"], subject=email_subject, body=email_body)
             if mail_status is not True:
                 LOG.error(mail_status)
-                return UnprocessableEntity('Email Trigger failed')
-
+                raise UnprocessableEntity('Email Trigger failed')
             return {
                 "result": "Success",
                 "TokenID": token_data.TokenID
