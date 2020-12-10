@@ -134,7 +134,7 @@ class TerminationInitiationController(Resource):
             mail_status = send_email(to_address=form.EmailAddress, subject=subject, body=msg_text)
             if mail_status is not True:
                 LOG.error(mail_status)
-                return UnprocessableEntity('Email Trigger failed')
+                raise UnprocessableEntity('Email Trigger failed')
             return RESPONSE_OK
         except Exception as e:
             LOG.warning('Unexpected error happened during initiating termination: %s', e)

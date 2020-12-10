@@ -71,7 +71,7 @@ class UserNew(Resource):
                         mail_status = send_email(to_address=email, body=msg_text, subject="Welcome to Pension Management portal")
                         if mail_status is not True:
                             LOG.error(mail_status)
-                            return UnprocessableEntity('Email Trigger failed')
+                            raise UnprocessableEntity('Email Trigger failed')
                         return jsonify({"result": "Success"}), 200
                     else:
                         return jsonify({"error": "Username already exists"}), 409

@@ -134,7 +134,7 @@ class FormController(Resource):
                 mail_status = send_email(to_address=email_id, subject=subject, body=msgtext)
                 if mail_status is not True:
                     LOG.error(mail_status)
-                    return UnprocessableEntity('Email Trigger failed')
+                    raise UnprocessableEntity('Email Trigger failed')
                 form.LastNotifiedDate = datetime.utcnow()
                 db.session.commit()
                 return RESPONSE_OK
@@ -166,7 +166,7 @@ class FormController(Resource):
                 mail_status = send_email(to_address=email_id, subject=subject, body=msgtext)
                 if mail_status is not True:
                     LOG.error(mail_status)
-                    return UnprocessableEntity('Email Trigger failed')
+                    raise UnprocessableEntity('Email Trigger failed')
                 form.LastNotifiedDate = datetime.utcnow()
                 db.session.commit()
                 return RESPONSE_OK

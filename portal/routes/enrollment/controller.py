@@ -387,7 +387,7 @@ class EnrollmentController(Resource):
         mail_status = send_email(to_address=form.EmailAddress, subject=subject, body=body)
         if mail_status is not True:
             LOG.error(mail_status)
-            return UnprocessableEntity('Email Trigger failed')
+            raise UnprocessableEntity('Email Trigger failed')
 
     def _saveFormData_pre_update(self, token, form, args):
 
@@ -524,7 +524,7 @@ class EnrollmentController(Resource):
         mail_status = send_email(to_address=form.EmailAddress, subject=subject,body=body)
         if mail_status is not True:
             LOG.error(mail_status)
-            return UnprocessableEntity('Email Trigger failed')
+            raise UnprocessableEntity('Email Trigger failed')
 
     def _reject_pre_update(self, token, form, args):
         if 'Authorization' not in args or 'Ipaddress' not in args or 'username' not in args:
@@ -575,7 +575,7 @@ class EnrollmentController(Resource):
         mail_status = send_email(to_address=form.EmailAddress, subject=subject, body=body)
         if mail_status is not True:
             LOG.error(mail_status)
-            return UnprocessableEntity('Email Trigger failed')
+            raise UnprocessableEntity('Email Trigger failed')
 
     @ns.doc(description='Delete enrollment file',
             responses={

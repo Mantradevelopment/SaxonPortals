@@ -195,7 +195,7 @@ class TerminationInitiationController(Resource):
                         mail_status = send_email(to_address=args['EmailAddress'], subject=member_subject, body=member_msg_text)
                         if mail_status is not True:
                             LOG.error(mail_status)
-                            return UnprocessableEntity('Email Trigger failed')
+                            raise UnprocessableEntity('Email Trigger failed')
                         return {"result": "Success"}, 200
                     except smtplib.SMTPException as e:
                         LOG.error("smtp exception at termination", str(e))
@@ -264,7 +264,7 @@ class TerminationInitiationController(Resource):
                             mail_status = send_email(to_address=args['EmailAddress'], subject=subject, body=msg_text)
                             if mail_status is not True:
                                 LOG.error(mail_status)
-                                return UnprocessableEntity('Email Trigger failed')
+                                raise UnprocessableEntity('Email Trigger failed')
                             return {"result": "Success"}, 200
                         except smtplib.SMTPException as e:
                             LOG.error("smtp exception at termination", str(e))
@@ -310,7 +310,7 @@ class TerminationInitiationController(Resource):
                             mail_status = send_email(to_address=args['EmailAddress'], subject=subject, body=msg_text)
                             if mail_status is not True:
                                 LOG.error(mail_status)
-                                return UnprocessableEntity('Email Trigger failed')
+                                raise UnprocessableEntity('Email Trigger failed')
                             return {"result": "Success"}, 200
                         except smtplib.SMTPException as e:
                             LOG.error("smtp exception at termination", str(e))

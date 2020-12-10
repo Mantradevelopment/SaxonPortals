@@ -76,7 +76,7 @@ class AddUser(Resource):
                     mail_status = send_email(email, "Welcome to Pension Management portal", body=msg_text)
                     if mail_status is not True:
                         LOG.error(mail_status)
-                        return UnprocessableEntity('Email Trigger failed')
+                        raise UnprocessableEntity('Email Trigger failed')
                     return {"result": "Success"}, 200
                 elif userexist.Status == status.STATUS_DELETE:
                     userexist.Username = username
@@ -99,7 +99,7 @@ class AddUser(Resource):
                     mail_status = send_email(email, "Welcome to Pension Management portal", body=msg_text)
                     if mail_status is not True:
                         LOG.error(mail_status)
-                        return UnprocessableEntity('Email Trigger failed')    
+                        raise UnprocessableEntity('Email Trigger failed')    
                     return {"result": "Success"}, 200
                 else:
                     raise UnprocessableEntity('Duplicate user cannot be created')

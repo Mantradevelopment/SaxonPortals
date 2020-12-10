@@ -103,7 +103,7 @@ class UpdateUser(Resource):
                     mail_status = send_email(user.Email, subject=subject, body=msgtext)
                     if mail_status is not True:
                         LOG.error(mail_status)
-                        return UnprocessableEntity('Email Trigger failed')
+                        raise UnprocessableEntity('Email Trigger failed')
                 return RESPONSE_OK
             elif role == roles.ROLES_EMPLOYER or role == roles.ROLES_MEMBER or role == roles.ROLES_HR:
                 display_name = args["displayname"]
@@ -133,7 +133,7 @@ class UpdateUser(Resource):
                     mail_status = send_email(user.Email, subject=subject, body=msgtext)
                     if mail_status is not True:
                         LOG.error(mail_status)
-                        return UnprocessableEntity('Email Trigger failed')
+                        raise UnprocessableEntity('Email Trigger failed')
                 return RESPONSE_OK
             else:
                 raise BadRequest('Invalid Role')
