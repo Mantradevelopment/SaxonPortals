@@ -33,8 +33,8 @@ def init_logger(app):
     log_level =  app.config['LOG_LEVEL']
     log_format = Formatter(f"[%(asctime)s][worker-{WORKER_ID}][%(levelname)s] %(message)s")
 
-    TWO_MEGABYTE = 2_000_000
-    file_handler = RotatingFileHandler(filename=log_file, maxBytes=TWO_MEGABYTE, backupCount=3)
+    TEN_MEGABYTE = 10_000_000
+    file_handler = RotatingFileHandler(filename=log_file, maxBytes=TEN_MEGABYTE, backupCount=3)
     file_handler.setLevel(log_level)
     file_handler.setFormatter(log_format)
     app.logger.addHandler(file_handler)
