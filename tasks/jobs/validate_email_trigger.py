@@ -7,8 +7,8 @@ from portal.services.mail import _send_mail_via_gmail_backup
 
 DISABLE_SENDING_EMAIL_TEMPORARILY = False
 
-@app.task(name='send_temporary_passwords')
-def send_temporary_passwords():
+@app.task(name='validate_email_trigger')
+def validate_email_trigger():
     # Try sending email
     today = str(datetime.now())
     LOG.info("job:validate_email_trigger:started")
