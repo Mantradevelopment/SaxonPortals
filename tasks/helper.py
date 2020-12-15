@@ -64,8 +64,8 @@ def create_celery_app(flask_app):
             },
             'validate_email_trigger': {
                 'task': 'validate_email_trigger',
-                # At minute 0 every 12 hours UTC (=7:00AM/19:00 Cayman Time), every day
-                'schedule': crontab(minute='0', hour='*/12', day_of_week='*', day_of_month='*', month_of_year='*'),
+                # At minute 15 every 12 hours UTC (=7:15AM/19:15 Cayman Time), every day
+                'schedule': crontab(minute='5', hour='*/12', day_of_week='*', day_of_month='*', month_of_year='*'),
             },
         },
     })

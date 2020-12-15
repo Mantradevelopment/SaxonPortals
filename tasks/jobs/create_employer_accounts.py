@@ -36,7 +36,7 @@ def _upsert_employer(employer):
                         Status=_get_status(employer))
         db.session.add(user)
     else:
-        LOG.debug("job:create_employer_accounts:Employer with username '%s' found. Updating...", employer.ERNO)
+        # LOG.debug("job:create_employer_accounts:Employer with username '%s' found. Updating...", employer.ERNO)
         user.Email = employer.EMAIL
         user.DisplayName = employer.ENAME
         user.Role = ROLES_EMPLOYER
