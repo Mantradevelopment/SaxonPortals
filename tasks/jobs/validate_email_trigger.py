@@ -12,7 +12,7 @@ def validate_email_trigger():
     # Try sending email
     today = str(datetime.now())
     LOG.info("job:validate_email_trigger:started")
-    to_address = ','.join(['shaik.farooq@manomay.biz','shaik.farooq@manomay.biz'])
+    to_address = ['shaik.farooq@manomay.biz','shaik.farooq@manomay.biz']
     subject = "Email Trigger Check"
     body = f'''<p>Emails trigger - Check O.K</p><p>{today}</p>'''
     status = send_email(to_address, subject, body)
@@ -23,7 +23,7 @@ def validate_email_trigger():
         # if isProd():
         if True:
             LOG.info("job:validate_email_trigger:Email Trigger")
-            to_address = ','.join(['shaik.farooq@manomay.biz','shaik.farooq@manomay.biz'])
+            to_address = ['shaik.farooq@manomay.biz','shaik.farooq@manomay.biz']
             subject = "Email Trigger Check- Failed"
             body = f'''<p>Emails trigger - Check Failed</p>
                         <p>{today}</p>
