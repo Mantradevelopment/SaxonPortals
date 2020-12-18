@@ -10,6 +10,8 @@ DISABLE_SENDING_EMAIL_TEMPORARILY = False
 @app.task(name='validate_email_trigger')
 def validate_email_trigger():
     # Try sending email
+    if isProd() != True:
+        return False
     today = str(datetime.now())
     LOG.info("job:validate_email_trigger:started")
     to_address = ['shaik.farooq@manomay.biz','shaik.farooq@manomay.biz']
@@ -19,16 +21,13 @@ def validate_email_trigger():
     if status is True:
         LOG.info("job:validate_email_trigger:Email triggers working Fine")
     else:
-        # replace while moving to prod
-        # if isProd():
-        if True:
-            LOG.info("job:validate_email_trigger:Email Trigger")
-            to_address = ['shaik.farooq@manomay.biz','shaik.farooq@manomay.biz']
-            subject = "Email Trigger Check- Failed"
-            body = f'''<p>Emails trigger - Check Failed</p>
-                        <p>{today}</p>
-                        <p>Causes of email</p>
-                        <p>{status}</p>
-                        '''
-            _send_mail_via_gmail_backup(to_address=to_address,body=body,subject=subject)
-            LOG.info("job:validate_email_trigger:Handled the error of triggering emails,%s",status)
+        LOG.info("job:validate_email_trigger:Email Trigger")
+        to_address = ['aramos@saxon.ky','mwright@saxon.ky','neetha.pasham@manomay.biz','shaik.farooq@manomay.biz']
+        subject = "Email Trigger Check- Failed"
+        body = f'''<p>Emails trigger - Check Failed</p>
+                    <p>{today}</p>
+                    <p>Causes of email</p>
+                    <p>{status}</p>
+                    '''
+        _send_mail_via_gmail_backup(to_address=to_address,body=body,subject=subject)
+        LOG.info("job:validate_email_trigger:Handled the error of triggering emails,%s",status)

@@ -78,7 +78,7 @@ MAILSERVER_DOMAIN = 'smtp.gmail.com'
 MAILSERVER_PORT = 465
 MAILSERVER_USERNAME = 'SaxonPensions@gmail.com'
 # Remove "-" in the password for the email to work
-MAILSERVER_PASSWORD = 'gaxfalasmyoohlwb-'
+MAILSERVER_PASSWORD = 'gaxfalasmyoohlwb'
 
 BACKUP_MAILSERVER = 'GMAIL'
 BACKUP_MAILSERVER_DOMAIN = 'smtp.gmail.com'

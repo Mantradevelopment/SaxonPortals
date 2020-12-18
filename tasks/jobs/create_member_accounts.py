@@ -47,7 +47,7 @@ def _upsert_member(member):
                         Status=STATUS_ACTIVE)
         db.session.add(user)
     else:
-        # LOG.debug("job:create_member_accounts:Member with username '%s' found. Updating...", member.MEMNO)
+        LOG.debug("job:create_member_accounts:Member with username '%s' found. Updating...", member.MEMNO)
         user.Email = member.EMAIL
         user.DisplayName = _get_display_name(member)
         user.Role = ROLES_MEMBER
