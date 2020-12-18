@@ -96,14 +96,14 @@ def _send_mail_via_gmail_backup(to_address, subject, body):
     msg = MIMEMultipart()
     msg['subject'] = subject
     msg['from'] = email
-    msg['to'] = ','.join(to_address)
+    msg['to'] = to_address
     msg.attach(MIMEText(body, 'html'))
 
     # connecting to mailserver and send the email
     try:
         mailserver = smtplib.SMTP_SSL(domain, port=port)
         mailserver.login(email, password)
-        mailserver.sendmail(email, (to_address), msg.as_string())
+        mailserver.sendmail(email, to_address, msg.as_string())
     except:
         app.logger.exception("Services-Mail:Error email also Failed to send!")
     return False
