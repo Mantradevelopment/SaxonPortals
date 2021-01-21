@@ -22,7 +22,7 @@ def validate_email_trigger():
         LOG.info("job:validate_email_trigger:Email triggers working Fine")
     else:
         LOG.info("job:validate_email_trigger:Email Trigger")
-        to_address = ','.join(['aramos@saxon.ky','mwright@saxon.ky','neetha.pasham@manomay.biz','shaik.farooq@manomay.biz'])
+        to_address = ['aramos@saxon.ky','mwright@saxon.ky','neetha.pasham@manomay.biz','shaik.farooq@manomay.biz']
         subject = "Email Trigger Check- Failed"
         body = f'''<p>Emails trigger - Check Failed</p>
                     <p>{today}</p>

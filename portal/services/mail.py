@@ -96,7 +96,7 @@ def _send_mail_via_gmail_backup(to_address, subject, body):
     msg = MIMEMultipart()
     msg['subject'] = subject
     msg['from'] = email
-    msg['to'] = to_address
+    msg['to'] = ','.join(to_address)
     msg.attach(MIMEText(body, 'html'))
 
     # connecting to mailserver and send the email
